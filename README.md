@@ -14,4 +14,4 @@ I requisiti per la corretta consegna del progetto sono:
 
 ## Idea del Progetto
 
-*Non ancora disponibile*
+*La stiamo cercando*
