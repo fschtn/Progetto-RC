@@ -14,8 +14,6 @@ I requisiti per la corretta consegna del progetto sono:
 
 ## Idea del Progetto
 
-Apposto, ricapitolando il discorso di prima in aula:
-
 Applicazione che, una volta eseguito il login con Facebook e Google, mostra un profilo utente che riepiloga:
 
 - I libri in corso di lettura
