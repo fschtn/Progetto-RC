@@ -12,7 +12,7 @@ I requisiti per la corretta consegna del progetto sono:
 - Utilizzare AMQP (o simili) per almeno 1 funzionalità
 - Sviluppare e documentare tutti i file e le API su GitHub
 
-## Idea del Progetto
+## Idea del Progetto
 
 Apposto, ricapitolando il discorso di prima in aula:
 
