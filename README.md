@@ -14,4 +14,18 @@ I requisiti per la corretta consegna del progetto sono:
 
 ## Idea del Progetto
 
-*Non ancora disponibile*
+Apposto, ricapitolando il discorso di prima in aula:
+
+Applicazione che, una volta eseguito il login con Facebook e Google, mostra un profilo utente che riepiloga:
+
+- I libri in corso di lettura
+- I libri in coda di lettura
+- I libri letti dall'utente
+
+Dal profilo si può arrivare anche a una pagina dedicata alle statistiche dell'utente (che vedremo in seguito) o alla pagina degli amici, su cui viene mostrato un elenco di amici che hanno utilizzato l'applicazione e da cui è possibile raggiungere ciascun profilo.
+
+E' anche possibile cercare nuovi libri tramite la barra di ricerca.
+
+Tutti i libri verranno cercati su [Google Books](https://developers.google.com/books/), tramite il token ottenuto dall'account Google dell'utente al momento del login.
+
+Tutti gli amici che hanno eseguito l'accesso all'app verranno invece ricercati tramite le [API di Facebook](https://developers.facebook.com/docs/graph-api/).
