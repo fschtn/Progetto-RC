@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Libri in lettura - Book time</title>
+        <meta charset="utf-8" />
+        <link href="style.css" type="text/css" rel="stylesheet" />
+    </head>
+    <body>
+        <header>
+            <div class="container">
+                <form action="search.html" method="get">
+                    <input type="text" name="q" placeholder="Cerca.." autocomplete="off"/>
+                    <input type="submit" value="Cerca" hidden />
+                </form>
+            </div>
+        </header>
+        <div class="container">
+            <nav>
+                <a href="profile.html"><img src="img/user.jpg" /> Nathan</a>
+                <a href="reading.html" class="current">In lettura</a>
+                <a href="to-read.html">Da leggere</a>
+                <a href="read.html">Letti</a>
+                <a href="logout.html">Logout</a>
+            </nav>
+            <div class="libri">
+                <div style="background-image: url(img/libri/la-caduta-dei-giganti-ken-follett.jpg);">
+                    <a href="book.html?id=abc" class="info">
+                        <h1>La caduta dei giganti</h1>
+                        <h2>Ken Follett</h2>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
