@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Memorizza informazioni</title>
+        <script src="js/jquery.js"></script>
+        <script src="js/array_utenti_conoscendo.js"></script>
+        <script src="js/memorizza_dati_utente.js"></script>
+        <script>
+
+            var get_google = new Array();
+            var get_facebook = new Array();
+
+            $('body').ready(function() {
+                id_facebook = ottieni_id_facebook();
+                id_google = ottieni_id_google();
+                // memorizza_dati(id_facebook, id_google);
+                ottieni_utenti();
+                // setTimeout(function() {
+                //     stampa_utenti();
+                // }, 100);
+            });
+
+            function ottieni_id_facebook() {
+                return Math.floor(Math.random()*1000000);
+            }
+
+            function ottieni_id_google() {
+                return Math.floor(Math.random()*1000000);
+            }
+
+
+            // function stampa_utenti() {
+            //     $('body').append("Ottengo ID Google da ID Facebook<br />");
+            //     for(key in get_google) {
+            //         $('body').append("ID Facebook: "+key+" - ID Google: "+get_google[key]+"<br />");
+            //     }
+            //     $('body').append("<br />Ottengo ID Facebook da ID Google<br />");
+            //     for(key in get_facebook) {
+            //         $('body').append("ID Google: "+key+" - ID Facebook: "+get_facebook[key]+"<br />");
+            //     }
+            // }
+        </script>
+    </head>
+    <body>
+
+    </body>
+</html>

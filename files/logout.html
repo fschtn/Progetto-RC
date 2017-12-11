@@ -1,11 +1,50 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Logout — Book time</title>
-        <meta charset="utf-8" />
-        <link href="style.css" type="text/css" rel="stylesheet" />
+        <!-- <script src="js/jquery.js"></script> -->
     </head>
     <body>
-        <script>window.location.href = "index.html";</script>
+        <script>
+          	window.onload = function () {
+          		window.fbAsyncInit = function () {
+          			FB.init({
+          				appId: '194992524408368', // App ID (Change with your app id)
+          				status: true, // check login status
+          				cookie: true, // enable cookies to allow the server to access the session
+          				xfbml: true, // parse XFBML
+                        version    : 'v2.11'
+          			});
+          			FB.Event.subscribe('auth.authResponseChange', function (response) {
+          				if (response.status === 'connected') {
+                            // L'UTENTE è LOGGATO
+                            console.log("l'utente si è loggato");
+          				} else if (response.status === 'not_authorized') {
+          					// L'UTENTE è NON AUTORIZZATO
+                            console.log("l'utente non è autorizzato");
+          				} else {
+                            // L'UTENTE SI è SLOGGATO
+                            console.log("l'utente si è sloggato");
+          				}
+          			});
+          		};
+
+                setTimeout(function() {
+
+                    FB.getLoginStatus(function (response) {
+          				if (response.authResponse) {
+          					var uid = response.authResponse.userID;
+          					var accessToken = response.authResponse.accessToken;
+          					FB.logout(function (response) {
+          						console.log(response);
+          					});
+          				}else{
+          					// L'UTENTE SI è SLOGGATO
+                            console.log("l'utente si è sloggato");
+          				}
+          			});
+                }, 100);
+          	};
+
+        </script>
     </body>
 </html>
