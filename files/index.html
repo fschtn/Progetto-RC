@@ -27,18 +27,28 @@
           				xfbml: true, // parse XFBML
                         version    : 'v2.11'
           			});
-          			FB.Event.subscribe('auth.authResponseChange', function (response) {
-          				if (response.status === 'connected') {
-                            // L'UTENTE è LOGGATO
-                            console.log("l'utente si è loggato");
-          				} else if (response.status === 'not_authorized') {
-          					// L'UTENTE è NON AUTORIZZATO
-                            console.log("l'utente non è autorizzato");
-          				} else {
-                            // L'UTENTE SI è SLOGGATO
-                            console.log("l'utente si è sloggato");
-          				}
-          			});
+
+                FB.getLoginStatus(function(response) {
+                  if (response.status == "connected"){
+                    alert("Utente già connesso");
+                    window.location.href = "google_connect.html";
+                  }
+
+
+                });
+
+          			// FB.Event.subscribe('auth.authResponseChange', function (response) {
+          			// 	if (response.status === 'connected') {
+                //             // L'UTENTE è LOGGATO
+                //             console.log("l'utente si è loggato");
+          			// 	} else if (response.status === 'not_authorized') {
+          			// 		// L'UTENTE è NON AUTORIZZATO
+                //             console.log("l'utente non è autorizzato");
+          			// 	} else {
+                //             // L'UTENTE SI è SLOGGATO
+                //             console.log("l'utente si è sloggato");
+          			// 	}
+          			// });
           		};
 
                 (function(d, s, id) {
@@ -58,20 +68,20 @@
           		// 	});
           		// });
 
-          		$('#logout').click(function() {
-          			FB.getLoginStatus(function (response) {
-          				if (response.authResponse) {
-          					var uid = response.authResponse.userID;
-          					var accessToken = response.authResponse.accessToken;
-          					FB.logout(function (response) {
-          						console.log(response);
-          					});
-          				}else{
-          					// L'UTENTE SI è SLOGGATO
-                            console.log("l'utente si è sloggato");
-          				}
-          			});
-          		});
+          		// $('#logout').click(function() {
+          		// 	FB.getLoginStatus(function (response) {
+          		// 		if (response.authResponse) {
+          		// 			var uid = response.authResponse.userID;
+          		// 			var accessToken = response.authResponse.accessToken;
+          		// 			FB.logout(function (response) {
+          		// 				console.log(response);
+          		// 			});
+          		// 		}else{
+          		// 			// L'UTENTE SI è SLOGGATO
+              //               console.log("l'utente si è sloggato");
+          		// 		}
+          		// 	});
+          		// });
           	});
 
         </script>
@@ -79,7 +89,7 @@
             <img src="img/logo.png" alt="Logo" /><br />
             <h1>Book Time.</h1>
             <b>Book Time</b> è l'applicazione perfetta per tutti gli amanti della lettura. D'ora in avanti potrai tener traccia di tutti i libri che hai letto, creare una lista dei libri che hai intenzione di leggere prossimamente e smettere di dimenticare la pagina a cui sei arrivato, con la comoda funzione <u>segnalibro</u>! Inoltre, potrai tenere d'occhio i progressi di lettura dei tuoi amici di Facebook!<br />
-            <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="true" scope="public_profile,email,user_birthday, user_friends, user_location, user_hometown, user_likes"></div>
+            <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="true" scope="public_profile,email" onclick="getLoginStatus();"></div>
         </div>
     </body>
 </html>
