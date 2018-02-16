@@ -71,7 +71,7 @@ Nella pagina sarà anche presente un tasto per aggiungere il libro alla propria 
 
 ## <a name="controlli"></a>Controlli
 I controlli che verranno eseguiti dalle pagine saranno:
-- **Tutte le pagine (non "Accesso")**: Controllo che l'utente sia loggato ad entrambi i servizi (Facebook e Google)
+- **\*Tutte le pagine (non "Accesso")**: Controllo che l'utente sia loggato ad entrambi i servizi (Facebook e Google)
 - **Tutte le pagine (non "Accesso")**: Controllo che l'utente attualmente loggato abbia un access token valido
 - **Pagine "Da leggere" e "Letti"**: Controllo che nella libreria attualmente visualizzata sia presente almeno 1 libro
 - **Pagina "In lettura"**: Controllo che l'utente abbia realmente iniziato a leggere il libro (cioè abbia inserito già una pagina raggiunta all'interno del proprio profilo)
