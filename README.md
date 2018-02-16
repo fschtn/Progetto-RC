@@ -42,7 +42,7 @@ L'organizzazione per la navigazione delle pagine sarà strutturata secondo la se
 ![Navigazione delle pagine](https://github.com/francescosche/Progetto-RC/blob/master/img/navigazione-pagine.jpg)
 In cui le pagine avranno la logica e struttura descritte nei paragrafi successivi.
 
-### Accesso
+### <a name="accesso"></a>Accesso
 La homepage (che è anche pagina di login) mostrerà il logo dell'applicazione, seguito da una breve spiegazione di cosa svolge il sito, con un accenno alle sue funzioni principali.
 Subito sotto l'introduzione, la pagina è divisa in due sezioni, con le quali si accede rispettivamente a Facebook e Google. Ciascuna delle sezioni riporterà una breve spiegazione del motivo per cui viene richiesto l'accesso con quell'account.
 ![Pagina di accesso con nessun login fatto](https://github.com/francescosche/Progetto-RC/blob/master/img/accesso-nologin.jpg)
@@ -68,6 +68,9 @@ Su queste pagine, dopo aver eseguito il [controllo\*](#controlli), verranno visu
 Su questa pagina, dopo aver eseguito il [controllo\*](#controlli), viene ricavato l'ID del libro di cui si vogliono avere maggiori informazioni tramite l'URL (all'interno di un parametro "id"). Con questo ID, vengono scaricate le informazioni del libro da Google Books, ed inserite all'interno della pagina, in modo da mostrare (di fianco alla copertina del libro) il suo titolo, l'autore, delle informazioni generali e la trama.
 Nella pagina sarà anche presente un tasto per aggiungere il libro alla propria libreria (nell'elenco dei libri [Da Leggere](#daleggere), se non già presente).
 ![Pagina con le informazioni del singolo libro](https://github.com/francescosche/Progetto-RC/blob/master/img/libro.jpg)
+
+### Logout
+Nella pagina del _Logout_ non verrà fatto altro che terminare la sessione creata dall'utente e reindirizzare l'utente alla pagina di [Accesso](#accesso), in modo che possa fare nuovamente l'accesso con un altro profilo.
 
 ## <a name="controlli"></a>Controlli
 I controlli che verranno eseguiti dalle pagine saranno:
