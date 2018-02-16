@@ -12,6 +12,14 @@ I requisiti per la corretta consegna del progetto sono:
 - Utilizzare AMQP (o simili) per almeno 1 funzionalità
 - Sviluppare e documentare tutti i file e le API su GitHub
 
+## Tecnologie utilizzate
+
+- REST 1: Facebook (oAuth)
+- REST 2: Google (oAuth)
+- WebSocket: HTML5
+- AMQP: RabbitMQ (HTML5)
+- Documentazione GitHub: MarkDown
+
 ## Idea del Progetto
 
 Applicazione che, una volta eseguito il login con Facebook e Google, mostra un profilo utente che riepiloga:
