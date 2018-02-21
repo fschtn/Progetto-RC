@@ -1,0 +1,4 @@
+Nei file contenuti in questa cartella ci sono le informazioni degli utenti, strutturate nel seguente modo:
+
+    ————————— utenti_loggati.csv —————————
+FB_user_ID, FB_access_token, google_user_ID, google_access_token

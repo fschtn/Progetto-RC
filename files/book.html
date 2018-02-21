@@ -1,9 +1,27 @@
+<!--
+
+    Migliorare il tasto "Aggiungi alla mia libreria" sotto la copertina (controllare che la classe "pages" sia graficamente bella da vedere, anche con un solo tasto)
+
+    Fare in modo che, se si clicca il tasto "Aggiungi alla mia libreria", venga richiamata la funzione addToLibrary(id)
+
+-->
 <!DOCTYPE html>
 <html>
     <head>
         <title>TITOLO LIBRO - Book time</title>
         <meta charset="utf-8" />
         <link href="style.css" type="text/css" rel="stylesheet" />
+        <script src="js/jquery.js"></script>
+        <script src="js/script.js"></script>
+        <script>
+
+            // Ottenere l'ID del libro da visualizzare dall'URL della pagina
+            //
+            // Ricavare il titolo, l'URL dell'immagine di copertina, l'autore, il numero di pagine, la lingua, il voto e la trama del libro
+            //
+            // Scrivere il titolo, l'URL dell'immagine di copertina, l'autore, il numero di pagine, la lingua, il voto e la trama del libro sulla pagina
+
+        </script>
     </head>
     <body>
         <header>
@@ -26,11 +44,7 @@
                 <div class="left">
                     <div class="copertina" style="background-image: url(img/libri/it-stephen-king.jpg);"></div>
                     <div class="pages">
-                        <span>Pagine</span>
-                        <input type="number" min="0" max="1168" value="58" /> / <input type="number" value="1168" disabled /><br />
-                        <a href="#" class="button green">Segna come completato</a><br />
-                        <a href="#" class="button teal">Segna come da leggere</a><br />
-                        <a href="#" class="button red">Rimuovi dalla libreria</a><br />
+                        <a href="#" class="button green">Aggiungi alla mia libreria</a>
                     </div>
                 </div>
                 <div class="info">

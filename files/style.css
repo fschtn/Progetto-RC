@@ -107,11 +107,14 @@ nav a:last-child {
 #login {
     padding: 100px 0;
     text-align: center;
-    color: #fff;
-    font-size: 22px;
     height: 100%;
     box-sizing: border-box;
+    font-size: 22px;
+}
+
+#login, #login_buttons {
     font-weight: 200;
+    color: #fff;
     letter-spacing: 1px;
     line-height: 1.6;
 }
@@ -125,8 +128,26 @@ nav a:last-child {
     margin: 10px 0 40px;
 }
 
-#login .button {
+#login_buttons {
     margin-top: 45px;
+    margin-bottom: 200px;
+    overflow: hidden;
+}
+
+#login_buttons > div {
+    width: 50%;
+    float: left;
+    text-align: center;
+    font-size: 20px;
+}
+
+#login_buttons > div img {
+    width: 20%;
+    margin-left: 40%;
+}
+
+#login_buttons .button {
+    display: inline-block;
 }
 
 .libri, .book {
