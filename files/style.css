@@ -170,7 +170,23 @@ nav a:last-child {
     margin-top: 0;
 }
 
-.libri > div {
+.libro {
+    width: 100%;
+    display: block;
+    overflow: hidden;
+}
+
+.libro > .cover {
+    float: left;
+}
+
+.libro > .info {
+    float: left;
+    width: calc((100% / 5)*4 - ((100%/5)/5)*2);
+    margin-top: 25px;
+}
+
+.cover {
     width: calc(100% / 5);
     height: 250px;
     margin: 25px calc(((100%/5)/5)) 5px 1%;
@@ -181,11 +197,11 @@ nav a:last-child {
     box-shadow: 2px 2px 4px rgba(0,0,0,0.8);
 }
 
-.libri > div:nth-of-type(4n) {
+.cover:nth-of-type(4n) {
     margin-right: 0;
 }
 
-.libri > div .info {
+.cover .info {
     width: 100%;
     height: 100%;
     padding: 40px 0px;
@@ -198,21 +214,21 @@ nav a:last-child {
     text-shadow: 1px 1px 4px #000;
 }
 
-.libri > div:hover .info {
+.cover:hover .info {
     opacity: 1;
 }
 
-.libri > div .info h1, .libri > div .info h2 {
+.cover .info h1, .cover .info h2 {
     text-align: center;
 }
 
-.libri > div .info h1 {
+.cover .info h1 {
     margin: 0 15px;
     font-size: 20px;
     font-weight: 400;
 }
 
-.libri > div .info h2 {
+.cover .info h2 {
     margin: 0 15px;
     font-size: 12px;
     text-transform: uppercase;
@@ -221,7 +237,7 @@ nav a:last-child {
     color: #999;
 }
 
-.libri > div .info h2::before {
+.cover .info h2::before {
     content: '';
     width: 15px;
     height: 3px;
@@ -260,13 +276,13 @@ nav a:last-child {
     vertical-align: top;
 }
 
-.book .info h1 {
+.book .info h1, .libro > .info h1 {
     margin: 0 0 5px;
     font-size: 38px;
     line-height: .9;
 }
 
-.book .info h2 {
+.book .info h2, .libro > .info h2 {
     font-size: 20px;
     margin: 0 0 15px;
     color: #aaa;
@@ -321,7 +337,7 @@ nav a:last-child {
     color: #ccc;
 }
 
-.book .pages input {
+.libro > .info input {
     font-size: 16px;
     font-family: inherit;
     font-weight: 300;
@@ -332,7 +348,7 @@ nav a:last-child {
     border-radius: 5px;
 }
 
-.book .pages input[disabled] {
+.libro > .info input[disabled] {
     border: 0;
     background: none;
     color: #101010;
