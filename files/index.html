@@ -42,8 +42,7 @@
 
                 FB.getLoginStatus(function(response) {
                   if (response.status == "connected"){
-                    alert("Utente connesso");
-                    window.location.href = "profile.html";
+                    checkLogin();
                   }
 
 
