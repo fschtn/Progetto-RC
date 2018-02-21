@@ -105,7 +105,7 @@ nav a:last-child {
 .button.facebook{background-color:#3b5998;}
 
 #login {
-    padding: 100px 0;
+    padding: 85px 0 50px;
     text-align: center;
     height: 100%;
     box-sizing: border-box;
@@ -120,17 +120,16 @@ nav a:last-child {
 }
 
 #login img {
-    width: 120px;
+    width: 80px;
 }
 
 #login h1 {
-    font-size: 40px;
-    margin: 10px 0 40px;
+    font-size: 35px;
+    margin: 5px 0 30px;
 }
 
 #login_buttons {
-    margin-top: 45px;
-    margin-bottom: 200px;
+    margin-bottom: 150px;
     overflow: hidden;
 }
 
@@ -143,11 +142,12 @@ nav a:last-child {
 
 #login_buttons > div img {
     width: 20%;
-    margin-left: 40%;
+    margin-bottom: 15px;
 }
 
 #login_buttons .button {
     display: inline-block;
+    margin-top: 30px;
 }
 
 .libri, .book {
