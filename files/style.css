@@ -150,6 +150,10 @@ nav a:last-child {
     margin-top: 30px;
 }
 
+#login_buttons > div > div {
+    display: inline-block;
+}
+
 .libri, .book {
     margin-top: 50px;
 }
