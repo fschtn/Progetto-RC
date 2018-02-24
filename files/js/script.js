@@ -2,16 +2,35 @@ function pageLoad() {
 //     richiamata al caricamento della pagina, ottiene nome dell'utente attualmente loggato (tramite getUserName()) e la sua immagine del profilo (tramite getUserImage()), e le mostra all'interno del menu. Richiama poi checkLogin()
 }
 
+function controllaAccessoGoogle() {
+    // Se l'utente ha fatto l'accesso, restituisce "true", altrimenti restituisce "false"
+}
+
+function controllaAccessoFacebook() {
+    // Se l'utente ha fatto l'accesso, restituisce "true", altrimenti restituisce "false"
+}
+
 function checkLogin() {
-//     Se ci si trova in "index.html"
-//         Se sono stati eseguiti entrambi gli accessi
-//             Reindirizza l'utente a "profile.html"
-//         Altrimenti
-//             Sostituisce il tasto di accesso già fatto con un "check" verde
+    // Se ci si trova nella pagina iniziale
+    if(document.location.pathname == "/") {
+        // Se sono stati eseguiti entrambi gli accessi
+        if(controllaAccessoGoogle() && controllaAccessoFacebook()) {
+            // Reindirizza l'utente a "profile.html"
+            window.location.href = '/profile.html';
+        }else{
+            // Sostituisce l'accesso "già fatto" con un "check"
+            if(controllaAccessoGoogle()){
+                console.log("L'accesso con Google è stato fatto, metti il check");
+            }
+            if(controllaAccessoFacebook()) {
+                console.log("L'accesso con Facebook è stato fatto, metti il check");
+            }
+        }
 //     Altrimenti
+    }else{
 //         Se NON sono stati eseguiti entrambi gli accessi
 //             Reindirizza l'utente a "index"
-    console.log("Ciao");
+    }
 }
 
 function getUserName() {
