@@ -11,6 +11,7 @@ function checkLogin() {
 //     Altrimenti
 //         Se NON sono stati eseguiti entrambi gli accessi
 //             Reindirizza l'utente a "index"
+    console.log("Ciao");
 }
 
 function getUserName() {
