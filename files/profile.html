@@ -7,18 +7,30 @@
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
         <script>
-            $(document).ready(function() {
-                // Ottenere il nome dell'utente attualmente loggato e scriverlo nel <title> della pagina
-                nome_utente = getUserName();
-                document.title = nome_utente+" - Book time";
+            $(document).ready(function () {
+                window.fbAsyncInit = function () {
+                    FB.init({
+                        appId: '194992524408368',
+                        status: true,
+                        cookie: true,
+                        xfbml: true,
+                        version    : 'v2.11'
+                    });
+                    FB.getLoginStatus(function(response) {
+                        pageLoad();
+                        inserisciNomeNelTitolo();
 
-                // Ottenere l'elenco degli ultimi 6 libri appartenente a ciascuna categoria (in lettura, da leggere, letti) e mostrarli sulla pagina, nelle sezioni corrispondenti
+                        // Ottenere l'elenco degli ultimi 6 libri appartenente a ciascuna categoria (in lettura, da leggere, letti) e mostrarli sulla pagina, nelle sezioni corrispondenti
 
-
-
-
-
-
+                    });
+                };
+                (function(d, s, id) {
+                    var js, fjs = d.getElementsByTagName(s)[0];
+                    if (d.getElementById(id)) return;
+                    js = d.createElement(s); js.id = id;
+                    js.src = 'https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v2.12';
+                    fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));
             });
         </script>
     </head>

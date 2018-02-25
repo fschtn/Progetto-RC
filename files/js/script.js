@@ -1,70 +1,5 @@
-$(document).ready(function () {
-    console.log("ciao");
-    window.fbAsyncInit = function () {
-        FB.init({
-            appId: '194992524408368',
-            status: true,
-            cookie: true,
-            xfbml: true,
-            version    : 'v2.11'
-        });
-        pageLoad();
-    };
-
-    (function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = 'https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v2.12';
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-
-
-
-
-
-});
-
-
-
-
-//
-//
-//
-// QUI SI LAVORA
-//
-//
-//
-//
-
-
-
-function controllaAccessoGoogle() {
-    // Se l'utente ha fatto l'accesso, restituisce "true", altrimenti restituisce "false"
-    gapi.auth.checkSessionState({client_id:'522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com'}, signinCallback);
-    gapi.auth2.getAuthInstance().isSignedIn.get();
-}
-
-
-function getUserName () {
-    // FB.api('/me', {fields: 'first_name'}, function(response) {
-    //     var name = (response.first_name);
-    // });
-    // return name;
-}
-
-
-
-
-//
-//
-//
-// COMPLETATE
-//
-//
-//
-
-
+var accesso_facebook;
+var facebook_access_token;
 
 function pageLoad() {
     // Richiamo la funzione checkLogin() per controllare che l'utente abbia fatto l'accesso
@@ -72,43 +7,70 @@ function pageLoad() {
     // Ottengo l'immagine dell'utente e la mostro sulla barra di navigazione
     $('nav a img').attr("src", getUserImage());
     // Ottengo nome e cognome dell'utente e lo mostro sulla barra di navigazione
-    $('nav a span').text(getUserName());
-}
-
-var logged = false;
-function controllaAccessoFacebook() {
-    FB.getLoginStatus(function(response) {
-      	if(response.status == 'connected') {
-            logged = true;
-      	}else{
-            logged = false;
-        }
-    });
-    return logged;
+    inserisciNomeNelMenu();
 }
 
 function checkLogin() {
-  console.log(controllaAccessoFacebook());
     if(document.location.pathname == "/") {
+        // console.log("Mi trovo sulla pagina iniziale. Controllo gli accessi.");
         if(controllaAccessoGoogle() && controllaAccessoFacebook()) {
+            // console.log("L'utente è loggato ad entrambi i servizi, reindirizzo a profile.html");
             window.location.href = '/profile.html';
         }else{
             if(controllaAccessoGoogle()){
+                // console.log("L'utente è loggato a Google, metto la spunta");
                 if(!$('#login_buttons > .google').hasClass("logged")){
                     $('#login_buttons > .google').addClass("logged");
                 }
             }
             if(controllaAccessoFacebook()) {
+                // console.log("L'utente è loggato a Facebook, metto la spunta");
                 if(!$('#login_buttons > .fb').hasClass("logged")){
                     $('#login_buttons > .fb').addClass("logged");
                 }
             }
         }
     }else{
+        // console.log("Mi trovo su una pagina interna al sito, controllo gli accessi.");
         if(!controllaAccessoGoogle() || !controllaAccessoFacebook()) {
+            // console.log("L'utente non ha fatto l'accesso a qualcosa, reindirizzo alla pagina iniziale");
             window.location.href = '/';
         }
     }
+}
+
+function controllaAccessoFacebook() {
+    // console.log("Controllo l'accesso con Facebook");
+    FB.getLoginStatus(function(response) {
+        if(response.status == 'connected') {
+            // console.log("L'utente è loggato in Facebook");
+            accesso_facebook = true;
+            facebook_access_token = response.authResponse.accessToken;
+        }else{
+            // console.log("L'utente non è loggato in Facebook");
+            accesso_facebook = false;
+        }
+    });
+    return accesso_facebook;
+}
+
+function controllaAccessoGoogle() {
+    // Se l'utente ha fatto l'accesso, restituisce "true", altrimenti restituisce "false"
+    // gapi.auth.checkSessionState({client_id:'522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com'}, signinCallback);
+    // gapi.auth2.getAuthInstance().isSignedIn.get();
+    return true;
+}
+
+function inserisciNomeNelMenu() {
+    $.get('https://graph.facebook.com/me?fields=first_name&access_token='+facebook_access_token,function(response) {
+        $('nav a span').text(response.first_name);
+    });
+}
+
+function inserisciNomeNelTitolo() {
+    $.get('https://graph.facebook.com/me?fields=first_name&access_token='+facebook_access_token,function(response) {
+        document.title = response.first_name+" - Book time";
+    });
 }
 
 
