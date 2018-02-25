@@ -1,7 +1,5 @@
 <!--
 
-    Modificare grafica della pagina in modo che vengano visualizzate, sotto la presentazione del sito, le due "div" con i tasti per accedere, rispettivamente, a Facebook e Google
-
     Aggiungere tasto di login di Google con funzione che ottiene l'ID e l'access token dell'utente
 
     Aggiungere chiamata a checkLogin() dopo l'accesso a ciascuna delle piattaforme, in modo da inserire il "check" verde o reindirizzare l'utente alla Home
@@ -16,123 +14,50 @@
         <link href="style.css" type="text/css" rel="stylesheet" />
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
+        <meta name="google-signin-scope" content="profile email">
+        <meta name="google-signin-client_id" content="522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com">
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
         <style>
             body {
                 background-color: #16a085;
                 padding: 0;
             }
         </style>
-        <script src="js/jquery.js"></script>
-        <meta name="google-signin-scope" content="profile email">
-        <meta name="google-signin-client_id" content="522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com">
-        <script src="https://apis.google.com/js/platform.js" async defer></script>
-        <script>
-
-
-        </script>
     </head>
     <body>
         <script>
-          	$(document).ready(function () {
-          		window.fbAsyncInit = function () {
-          			FB.init({
-          				appId: '194992524408368', // App ID (Change with your app id)
-          				status: true, // check login status
-          				cookie: true, // enable cookies to allow the server to access the session
-          				xfbml: true, // parse XFBML
-                        version    : 'v2.11'
-          			});
-
-                FB.getLoginStatus(function(response) {
-                  if (response.status == "connected"){
-                    console.log("accesso effettuato");
-                    // checkLogin();
-                  }
-
-
-                });
-
-          			// FB.Event.subscribe('auth.authResponseChange', function (response) {
-          			// 	if (response.status === 'connected') {
-                //             // L'UTENTE è LOGGATO
-                //             console.log("l'utente si è loggato");
-          			// 	} else if (response.status === 'not_authorized') {
-          			// 		// L'UTENTE è NON AUTORIZZATO
-                //             console.log("l'utente non è autorizzato");
-          			// 	} else {
-                //             // L'UTENTE SI è SLOGGATO
-                //             console.log("l'utente si è sloggato");
-          			// 	}
-          			// });
-          		};
-
-                // (function(d, s, id) {
-                //     var js, fjs = d.getElementsByTagName(s)[0];
-                //     if (d.getElementById(id)) return;
-                //     js = d.createElement(s); js.id = id;
-                //     js.src = "https://connect.facebook.net/en_US/sdk.js";
-                //     fjs.parentNode.insertBefore(js, fjs);
-                // }(document, 'script', 'facebook-jssdk'));
-
-                (function(d, s, id) {
-                    var js, fjs = d.getElementsByTagName(s)[0];
-                    if (d.getElementById(id)) return;
-                    js = d.createElement(s); js.id = id;
-                    js.src = 'https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v2.12';
-                    fjs.parentNode.insertBefore(js, fjs);
-                }(document, 'script', 'facebook-jssdk'));
-
-          		// $('#login').click(function(e){
-          		// 	FB.login(function (response) {
-                //         // AZIONE DA ESEGUIRE QUANDO L'UTENTE SI LOGGA
-                //         console.log("Bevenuto!");
-          		// 	}, {
-          		// 		scope: 'user_birthday,email'
-          		// 	});
-          		// });
-
-          		// $('#logout').click(function() {
-          		// 	FB.getLoginStatus(function (response) {
-          		// 		if (response.authResponse) {
-          		// 			var uid = response.authResponse.userID;
-          		// 			var accessToken = response.authResponse.accessToken;
-          		// 			FB.logout(function (response) {
-          		// 				console.log(response);
-          		// 			});
-          		// 		}else{
-          		// 			// L'UTENTE SI è SLOGGATO
-              //               console.log("l'utente si è sloggato");
-          		// 		}
-          		// 	});
-          		// });
-          	});
-            function onSignIn(googleUser) {
-                var profile = googleUser.getBasicProfile();
-                console.log("ID: " + profile.getId());
-                console.log('Full Name: ' + profile.getName());
-                console.log('Given Name: ' + profile.getGivenName());
-                console.log('Family Name: ' + profile.getFamilyName());
-                console.log("Image URL: " + profile.getImageUrl());
-                console.log("Email: " + profile.getEmail());
-                var id_token = googleUser.getAuthResponse().id_token;
-                console.log("ID Token: " + id_token);
+            function GoogleLogin(googleUser) {
+                // checkLogin();
+                // var profile = googleUser.getBasicProfile();
+                // console.log("ID: " + profile.getId());
+                // console.log('Full Name: ' + profile.getName());
+                // console.log('Given Name: ' + profile.getGivenName());
+                // console.log('Family Name: ' + profile.getFamilyName());
+                // console.log("Image URL: " + profile.getImageUrl());
+                // console.log("Email: " + profile.getEmail());
+                // var id_token = googleUser.getAuthResponse().id_token;
+                // console.log("ID Token: " + id_token);
             };
         </script>
         <div class="container" id="login">
             <img src="img/logo.png" alt="Logo" /><br />
-            <h1>Book Time.</h1>
+            <h1>Book Time</h1>
             <b>Book Time</b> è l'applicazione perfetta per tutti gli amanti della lettura. D'ora in avanti potrai tener traccia di tutti i libri che hai letto, creare una lista dei libri che hai intenzione di leggere prossimamente e smettere di dimenticare la pagina a cui sei arrivato, con la comoda funzione <u>segnalibro</u>! Inoltre, potrai tenere d'occhio i progressi di lettura dei tuoi amici di Facebook!<br />
         </div>
         <div class="container" id="login_buttons">
-            <div>
-                <img src="img/facebook.svg" /><br />
-                L'accesso con Facebook è necessario affinchè tu possa essere riconosciuto dal sistema, avere un'identità e cercare più facilmente i tuoi amici.<br />
-                <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="true" scope="public_profile,email" onlogin="FB.getLoginStatus();"></div>
+            <div class="fb">
+                <span>
+                    <img src="img/facebook.svg" /><br />
+                    L'accesso con Facebook è necessario affinchè tu possa essere riconosciuto dal sistema, avere un'identità e cercare più facilmente i tuoi amici.<br />
+                    <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="true" scope="public_profile,email" onlogin="checkLogin();"></div>
+                </span>
             </div>
-            <div>
-                <img src="img/google.svg" /><br />
-                L'accesso con Google è richiesto per dare la possibilità al sito di visualizzare le tue librerie, gestirle e cercare nuovi libri da leggere.<br />
-                <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+            <div class="google">
+                <span>
+                    <img src="img/google.svg" /><br />
+                    L'accesso con Google è richiesto per dare la possibilità al sito di visualizzare le tue librerie, gestirle e cercare nuovi libri da leggere.<br />
+                    <div class="g-signin2" id="signin-button" data-onsuccess="GoogleLogin" data-theme="dark"></div>
+                </span>
             </div>
         </div>
     </body>

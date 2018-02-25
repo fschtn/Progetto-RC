@@ -4,14 +4,22 @@
         <title>NOME UTENTE — Book time</title>
         <meta charset="utf-8" />
         <link href="style.css" type="text/css" rel="stylesheet" />
-        <script src="js/jquery.js"></script>
-        <script src="js/script.js"></script>
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/script.js"></script>
         <script>
+            $(document).ready(function() {
+                // Ottenere il nome dell'utente attualmente loggato e scriverlo nel <title> della pagina
+                nome_utente = getUserName();
+                document.title = nome_utente+" - Book time";
 
-            // Ottenere il nome dell'utente attualmente loggato e scriverlo nel <title> della pagina
-            //
-            // Ottenere l'elenco degli ultimi 6 libri appartenente a ciascuna categoria (in lettura, da leggere, letti) e mostrarli sulla pagina, nelle sezioni corrispondenti
+                // Ottenere l'elenco degli ultimi 6 libri appartenente a ciascuna categoria (in lettura, da leggere, letti) e mostrarli sulla pagina, nelle sezioni corrispondenti
 
+
+
+
+
+
+            });
         </script>
     </head>
     <body>
@@ -25,7 +33,7 @@
         </header>
         <div class="container">
             <nav>
-                <a href="profile.html" class="current"><img src="img/user.jpg" /> Nathan</a>
+                <a href="profile.html" class="current"><img src="img/user.jpg" /> <span>Nome Cognome</span></a>
                 <a href="reading.html">In lettura</a>
                 <a href="to-read.html">Da leggere</a>
                 <a href="read.html">Letti</a>

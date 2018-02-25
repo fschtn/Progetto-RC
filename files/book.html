@@ -1,19 +1,15 @@
-<!--
-
-    Fare in modo che, se si clicca il tasto "Aggiungi alla mia libreria", venga richiamata la funzione addToLibrary(id)
-
--->
 <!DOCTYPE html>
 <html>
     <head>
         <title>TITOLO LIBRO - Book time</title>
         <meta charset="utf-8" />
         <link href="style.css" type="text/css" rel="stylesheet" />
-        <script src="js/jquery.js"></script>
-        <script src="js/script.js"></script>
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/script.js"></script>
         <script>
 
             // Ottenere l'ID del libro da visualizzare dall'URL della pagina
+            id_libro = window.location.search.substr(3, window.location.search.length);
             //
             // Ricavare il titolo, l'URL dell'immagine di copertina, l'autore, il numero di pagine, la lingua, il voto e la trama del libro
             //
@@ -34,7 +30,7 @@
         </header>
         <div class="container">
             <nav>
-                <a href="profile.html"><img src="img/user.jpg" /> Nathan</a>
+                <a href="profile.html"><img src="img/user.jpg" /> <span>Nome Cognome</span></a>
                 <a href="reading.html">In lettura</a>
                 <a href="to-read.html">Da leggere</a>
                 <a href="read.html">Letti</a>
@@ -44,7 +40,7 @@
                 <div class="left">
                     <div class="copertina" style="background-image: url(img/libri/it-stephen-king.jpg);"></div>
                     <div class="pages">
-                        <a href="#" class="button green">Aggiungi alla mia libreria</a>
+                        <a href="javascript:addToLibrary('ID_DEL_LIBRO');" class="button green">Aggiungi alla mia libreria</a>
                     </div>
                 </div>
                 <div class="info">

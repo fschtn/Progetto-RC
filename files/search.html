@@ -1,21 +1,59 @@
+<!--
+
+    IN FUTURO, AGGIUNGERE PAGINAZIONE, IN MODO DA POTER VEDERE PIù LIBRI DI QUELLI MOSTRATI
+
+-->
 <!DOCTYPE html>
 <html>
     <head>
         <title>Ricerca per "" - Book time</title>
         <meta charset="utf-8" />
         <link href="style.css" type="text/css" rel="stylesheet" />
-        <script src="js/jquery.js"></script>
-        <script src="js/script.js"></script>
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/script.js"></script>
         <script>
+            $(document).ready(function() {
+                // Ottenere la stringa di testo cercata
+                libro_da_cercare = window.location.search.substr(3, window.location.search.length).replace("+"," ");
 
-            // Ottenere la stringa di testo cercata
-            //
-            // Mostrare la stringa nella pagina
-            //
-            // Cercare il libro su google -> searchBook(title)
-            //
-            // Mostrare i risultati della ricerca sulla pagina
+                // Mostrare la stringa nella pagina
+                $('.ricerca span').html(libro_da_cercare);
+                document.title = "Ricerca per \""+libro_da_cercare+"\" - Book time";
 
+                // Cercare il libro su google -> searchBook(title)
+                // $.get("https://www.googleapis.com/books/v1/volumes?q="+libro_da_cercare+"&printType=books&orderBy=relevance&filter=paid-ebooks&maxResults=20", function(response) {
+                //     response.items.forEach(crea_libro);
+                // });
+
+                var start = 0;
+                setInterval(function() {
+                    $.get("https://www.googleapis.com/books/v1/volumes?q="+libro_da_cercare+"&printType=books&orderBy=relevance&filter=paid-ebooks&maxResults=8&startIndex="+start, function(response) {
+                        response.items.forEach(crea_libro);
+                    });
+                    start += 8;
+                    if($(".libri > div").length > 0)
+                        $('.libri h3').remove();
+                }, 500);
+            });
+
+            function crea_libro(item) {
+                libro = $("<div></div>");
+                libro.addClass("cover");
+                libro.css("background-image", "url("+item.volumeInfo.imageLinks.thumbnail+")");
+                link = $("<a></a>");
+                titolo = $("<h1></h1>");
+                titolo_text = item.volumeInfo.title.length > 30 ? item.volumeInfo.title.substr(0,27)+"..." : item.volumeInfo.title;
+                titolo.append(titolo_text);
+                autore = $("<h2></h2>");
+                if(item.volumeInfo.hasOwnProperty('authors'))
+                    autore.append(item.volumeInfo.authors[0]);
+                link.append(titolo);
+                link.append(autore);
+                link.addClass("info");
+                link.attr("href","book.html?id="+item.id);
+                libro.append(link);
+                $('.libri').append(libro);
+            }
         </script>
     </head>
     <body>
@@ -29,38 +67,15 @@
         </header>
         <div class="container">
             <nav>
-                <a href="profile.html"><img src="img/user.jpg" /> Nathan</a>
+                <a href="profile.html"><img src="img/user.jpg" /> <span>Nome Cognome</span></a>
                 <a href="reading.html">In lettura</a>
                 <a href="to-read.html">Da leggere</a>
                 <a href="read.html">Letti</a>
                 <a href="logout.html">Logout</a>
             </nav>
             <div class="libri">
-                <h2>Ricerca per: !!!</h2>
-                <div style="background-image: url(img/libri/le-sfide-di-apollo-rick-riordan.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>Le sfide di Apollo</h1>
-                        <h2>Rick Riordan</h2>
-                    </a>
-                </div>
-                <div style="background-image: url(img/libri/macerie-prime-zerocalcare.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>Macerie prime</h1>
-                        <h2>Zerocalcare</h2>
-                    </a>
-                </div>
-                <div style="background-image: url(img/libri/non-ho-paura-del-buio-robert-dugoni.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>Non ho paura del buio</h1>
-                        <h2>Roberto Dugoni</h2>
-                    </a>
-                </div>
-                <div style="background-image: url(img/libri/the-store-james-patterson.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>The store</h1>
-                        <h2>James Patterson</h2>
-                    </a>
-                </div>
+                <h2 class="ricerca">Ricerca per: <span></span></h2>
+                <h3>Ricerca in corso...</h3>
             </div>
         </div>
     </body>
