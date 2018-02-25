@@ -1,50 +1,93 @@
 <!--
 
-    IN FUTURO, AGGIUNGERE PAGINAZIONE, IN MODO DA POTER VEDERE PIù LIBRI DI QUELLI MOSTRATI
+
+
+    Aggiungere, nella variabile "dettagli_ricerca", l'access_token di Google dell'utente attuale
+
+
 
 -->
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Ricerca per "" - Book time</title>
+        <title>Libri da leggere - Book time</title>
         <meta charset="utf-8" />
         <link href="style.css" type="text/css" rel="stylesheet" />
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
         <script>
-            $(document).ready(function() {
-                // Ottenere la stringa di testo cercata
-                libro_da_cercare = window.location.search.substr(3, window.location.search.length).replace("+"," ");
-
-                // Mostrare la stringa nella pagina
-                $('.ricerca span').html(libro_da_cercare);
-                document.title = "Ricerca per \""+libro_da_cercare+"\" - Book time";
-
-                // Cercare il libro su google -> searchBook(title)
-                // $.get("https://www.googleapis.com/books/v1/volumes?q="+libro_da_cercare+"&printType=books&orderBy=relevance&filter=paid-ebooks&maxResults=20", function(response) {
-                //     response.items.forEach(crea_libro);
-                // });
-
-                var start = 0;
-                setInterval(function() {
-                    $.get("https://www.googleapis.com/books/v1/volumes?q="+libro_da_cercare+"&printType=books&orderBy=relevance&filter=paid-ebooks&maxResults=8&startIndex="+start, function(response) {
-                        response.items.forEach(crea_libro);
+            $(document).ready(function () {
+                window.fbAsyncInit = function () {
+                    FB.init({
+                        appId: '194992524408368',
+                        status: true,
+                        cookie: true,
+                        xfbml: true,
+                        version    : 'v2.11'
                     });
-                    start += 8;
-                    if($(".libri > div").length > 0)
-                        $('.libri h3').remove();
+
+                    // Quando l'istanza di FB è stata creata, richiamo la funzione pageLoad()
+                    FB.getLoginStatus(function(response) {
+                        pageLoad();
+                    });
+                };
+                (function(d, s, id) {
+                    var js, fjs = d.getElementsByTagName(s)[0];
+                    if (d.getElementById(id)) return;
+                    js = d.createElement(s); js.id = id;
+                    js.src = 'https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v2.12';
+                    fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));
+
+                // Ottengo la stringa di testo cercata
+                // e la mostro la stringa ricercata all'interno della pagina e nella barra del titolo
+                libro_da_cercare = window.location.search.substr(3, window.location.search.length);
+                $('.ricerca span').html(libro_da_cercare.replace(/\+/g,' '));
+                document.title = "Ricerca per \""+libro_da_cercare.replace(/\+/g,' ')+"\" - Book time";
+                $('#ricerca > input[type=text]').val(libro_da_cercare.replace(/\+/g,' '));
+
+                // Definisco le variabili per le ricerche e
+                // creo un intervallo di 500ms durante il quale eseguo le ricerche
+                var start = 0;
+                var dettagli_ricerca = "&printType=books&orderBy=relevance&filter=paid-ebooks&maxResults=8&key=AIzaSyBFzl0QHgg6tPybSNW0DMxAQF40oQFFKqA";
+                var continua_ricerca = true;
+                var ricerca_libri = setInterval(function() {
+                    // Se la ricerca deve continuare,
+                    // cerco nuovi risultati,
+                    // altrimenti blocco l'esecuzione del setInterval()
+                    if(continua_ricerca) {
+                        // Cerco altri risultati su Google Books
+                        $.get("https://www.googleapis.com/books/v1/volumes?q="+libro_da_cercare+dettagli_ricerca+"&startIndex="+start, function(libri) {
+                            // Se la ricerca restituisce risultati,
+                            // richiamo la funzione crea_libro() per ciascun risultato,
+                            // aumento l'inizio della ricerca di 8
+                            // e rimuovo il testo di ricerca,
+                            // altrimenti blocco la ricerca di altri risultati
+                            if(libri.totalItems > 0) {
+                                libri.items.forEach(crea_libro);
+                                start += 8;
+                                $('.libri > h3').remove();
+                            }else{
+                                continua_ricerca = false;
+                                if($('.libri > .cover').length == 0 && $('.libri > h3').length == 1)
+                                    $('.libri > h3').text("Nessun risultato trovato");
+                            }
+                        });
+                    }else{
+                        clearInterval(ricerca_libri);
+                    }
                 }, 500);
             });
 
+            // Definisco la funzione di creazione di un nuovo libro
+            // che verrà richiamata per ciascun risultato trovato dalla ricerca
             function crea_libro(item) {
                 libro = $("<div></div>");
-                libro.addClass("cover");
-                libro.css("background-image", "url("+item.volumeInfo.imageLinks.thumbnail+")");
                 link = $("<a></a>");
                 titolo = $("<h1></h1>");
+                autore = $("<h2></h2>");
                 titolo_text = item.volumeInfo.title.length > 30 ? item.volumeInfo.title.substr(0,27)+"..." : item.volumeInfo.title;
                 titolo.append(titolo_text);
-                autore = $("<h2></h2>");
                 if(item.volumeInfo.hasOwnProperty('authors'))
                     autore.append(item.volumeInfo.authors[0]);
                 link.append(titolo);
@@ -52,6 +95,8 @@
                 link.addClass("info");
                 link.attr("href","book.html?id="+item.id);
                 libro.append(link);
+                libro.addClass("cover");
+                libro.css("background-image", "url("+item.volumeInfo.imageLinks.thumbnail+")");
                 $('.libri').append(libro);
             }
         </script>
@@ -59,7 +104,7 @@
     <body>
         <header>
             <div class="container">
-                <form action="search.html" method="get">
+                <form id="ricerca" action="search.html" method="get">
                     <input type="text" name="q" placeholder="Cerca.." autocomplete="off"/>
                     <input type="submit" value="Cerca" hidden />
                 </form>
@@ -67,7 +112,7 @@
         </header>
         <div class="container">
             <nav>
-                <a href="profile.html"><img src="img/user.jpg" /> <span>Nome Cognome</span></a>
+                <a href="profile.html" class="current"><img src="img/user.svg" /><span></span></a>
                 <a href="reading.html">In lettura</a>
                 <a href="to-read.html">Da leggere</a>
                 <a href="read.html">Letti</a>

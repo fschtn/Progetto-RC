@@ -1,8 +1,3 @@
-<!--
-
-    Mostrare un solo libro per riga, con la copertina sulla sinistra affiancata (a destra) dal titolo, l'autore, il numero di pagine totali,il numero di pagine attulamente lette (dentro un campo "number", in modo da poter essere modificate) e i tasti per segnare il libro come "completato" o "rimuoverlo dalla libreria"
-
--->
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,17 +7,42 @@
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
         <script>
+            $(document).ready(function () {
+                window.fbAsyncInit = function () {
+                    FB.init({
+                        appId: '194992524408368',
+                        status: true,
+                        cookie: true,
+                        xfbml: true,
+                        version    : 'v2.11'
+                    });
 
-            // Ottenere i libri che l'utente sta leggendo e mostrarli sulla pagina
-            //
-            // Per ciascun libro, ottnere le informazioni da mostrare di fianco alla copertina
-            //
-            // Per ciascun libro iniziato, ottenere anche la pagina attualmente registrata come "in lettura" e mostrarla nel form, in modo che l'utente possa modificarla
-            //
-            // Aggiungere funzione che, quando si modifica la pagina attualmente letta dall'utente, la aggiorna all'interno delle informazioni
-            //
-            // Fare in modo che, cliccando il tasto "Completato" o "Rimuovi dalla libreria" sotto il titolo del libro, esso venga segnalato come Completato o rimosso dalla libreria
+                    // Quando l'istanza di FB è stata creata, richiamo la funzione pageLoad()
+                    FB.getLoginStatus(function(response) {
+                        pageLoad();
 
+                        // Ottenere i libri che l'utente sta leggendo e mostrarli sulla pagina
+                        //
+                        // Per ciascun libro, ottnere le informazioni da mostrare di fianco alla copertina
+                        //
+                        // Per ciascun libro iniziato, ottenere anche la pagina attualmente registrata come "in lettura" e mostrarla nel form, in modo che l'utente possa modificarla
+                        //
+                        // Aggiungere funzione che, quando si modifica la pagina attualmente letta dall'utente, la aggiorna all'interno delle informazioni
+                        //
+                        // Fare in modo che, cliccando il tasto "Completato" o "Rimuovi dalla libreria" sotto il titolo del libro, esso venga segnalato come Completato o rimosso dalla libreria
+
+
+
+                    });
+                };
+                (function(d, s, id) {
+                    var js, fjs = d.getElementsByTagName(s)[0];
+                    if (d.getElementById(id)) return;
+                    js = d.createElement(s); js.id = id;
+                    js.src = 'https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v2.12';
+                    fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));
+            });
         </script>
     </head>
     <body>
@@ -36,8 +56,8 @@
         </header>
         <div class="container">
             <nav>
-                <a href="profile.html"><img src="img/user.jpg" /> <span>Nome Cognome</span></a>
-                <a href="reading.html" class="current">In lettura</a>
+                <a href="profile.html" class="current"><img src="img/user.svg" /><span></span></a>
+                <a href="reading.html">In lettura</a>
                 <a href="to-read.html">Da leggere</a>
                 <a href="read.html">Letti</a>
                 <a href="logout.html">Logout</a>

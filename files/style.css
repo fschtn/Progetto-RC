@@ -306,6 +306,7 @@ nav a:last-child {
     background-repeat: no-repeat;
     display: inline-block;
     box-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    background-color: #101010;
     clear: none;
 }
 

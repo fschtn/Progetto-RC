@@ -2,52 +2,41 @@ var accesso_facebook;
 var facebook_access_token;
 
 function pageLoad() {
-    // Richiamo la funzione checkLogin() per controllare che l'utente abbia fatto l'accesso
     checkLogin();
-    // Ottengo l'immagine dell'utente e la mostro sulla barra di navigazione
-    $('nav a img').attr("src", getUserImage());
-    // Ottengo nome e cognome dell'utente e lo mostro sulla barra di navigazione
-    inserisciNomeNelMenu();
+    ottieniInfoUtente();
+
+
+
+    // Aggiungere funzione che mostra la pagina, in modo da nasconderla prima che tutte le info siano caricate
+
+
+
 }
 
 function checkLogin() {
     if(document.location.pathname == "/") {
-        // console.log("Mi trovo sulla pagina iniziale. Controllo gli accessi.");
         if(controllaAccessoGoogle() && controllaAccessoFacebook()) {
-            // console.log("L'utente è loggato ad entrambi i servizi, reindirizzo a profile.html");
             window.location.href = '/profile.html';
         }else{
-            if(controllaAccessoGoogle()){
-                // console.log("L'utente è loggato a Google, metto la spunta");
-                if(!$('#login_buttons > .google').hasClass("logged")){
+            if(controllaAccessoGoogle())
+                if(!$('#login_buttons > .google').hasClass("logged"))
                     $('#login_buttons > .google').addClass("logged");
-                }
-            }
-            if(controllaAccessoFacebook()) {
-                // console.log("L'utente è loggato a Facebook, metto la spunta");
-                if(!$('#login_buttons > .fb').hasClass("logged")){
+            if(controllaAccessoFacebook())
+                if(!$('#login_buttons > .fb').hasClass("logged"))
                     $('#login_buttons > .fb').addClass("logged");
-                }
-            }
         }
     }else{
-        // console.log("Mi trovo su una pagina interna al sito, controllo gli accessi.");
-        if(!controllaAccessoGoogle() || !controllaAccessoFacebook()) {
-            // console.log("L'utente non ha fatto l'accesso a qualcosa, reindirizzo alla pagina iniziale");
+        if(!controllaAccessoGoogle() || !controllaAccessoFacebook())
             window.location.href = '/';
-        }
     }
 }
 
 function controllaAccessoFacebook() {
-    // console.log("Controllo l'accesso con Facebook");
     FB.getLoginStatus(function(response) {
         if(response.status == 'connected') {
-            // console.log("L'utente è loggato in Facebook");
             accesso_facebook = true;
             facebook_access_token = response.authResponse.accessToken;
         }else{
-            // console.log("L'utente non è loggato in Facebook");
             accesso_facebook = false;
         }
     });
@@ -61,17 +50,18 @@ function controllaAccessoGoogle() {
     return true;
 }
 
-function inserisciNomeNelMenu() {
-    $.get('https://graph.facebook.com/me?fields=first_name&access_token='+facebook_access_token,function(response) {
-        $('nav a span').text(response.first_name);
+function ottieniInfoUtente() {
+    $.get("https://graph.facebook.com/me?fields=first_name,picture&access_token="+facebook_access_token, function(response) {
+        if(document.location.pathname == "/profile.html")
+            document.title = response.first_name+" - Book time";
+        if(document.location.pathname != "/") {
+            $('nav a span').text(response.first_name);
+            $('nav a img').attr("src", response.picture.data.url);
+        }
     });
 }
 
-function inserisciNomeNelTitolo() {
-    $.get('https://graph.facebook.com/me?fields=first_name&access_token='+facebook_access_token,function(response) {
-        document.title = response.first_name+" - Book time";
-    });
-}
+
 
 
 
@@ -85,11 +75,8 @@ function inserisciNomeNelTitolo() {
 
 
 
-function getUserImage() {
-//     ottiene l'id dell'utente attualmente connesso e, poi,
-//     tramite le API, l'URL dell'immagine del profilo dell'utente corrispondente, e lo restituisce
-    return "https://www.okday.it/wp-content/uploads/2017/03/15085454_1168655113219089_4600400730997347072_n.jpg";
-}
+
+
 
 function addToLibrary(id, library) {
 //         id = id del libro

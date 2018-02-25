@@ -1,22 +1,70 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>TITOLO LIBRO - Book time</title>
+        <title>Dettagli libro - Book time</title>
         <meta charset="utf-8" />
         <link href="style.css" type="text/css" rel="stylesheet" />
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
         <script>
+            $(document).ready(function () {
+                window.fbAsyncInit = function () {
+                    FB.init({
+                        appId: '194992524408368',
+                        status: true,
+                        cookie: true,
+                        xfbml: true,
+                        version    : 'v2.11'
+                    });
 
-            // Ottenere l'ID del libro da visualizzare dall'URL della pagina
-            id_libro = window.location.search.substr(3, window.location.search.length);
-            //
-            // Ricavare il titolo, l'URL dell'immagine di copertina, l'autore, il numero di pagine, la lingua, il voto e la trama del libro
-            //
-            // Scrivere il titolo, l'URL dell'immagine di copertina, l'autore, il numero di pagine, la lingua, il voto e la trama del libro sulla pagina
-            //
-            // Se il libro è già presente nella libreria dell'utente, eliminare il tasto "Aggiungi alla mia libreria"
+                    // Quando l'istanza di FB è stata creata, richiamo la funzione pageLoad()
+                    FB.getLoginStatus(function(response) {
+                        pageLoad();
+                    });
 
+
+
+
+
+                    // Ottenere l'ID del libro da visualizzare dall'URL della pagina
+                    id_libro = window.location.search.substr(4, window.location.search.length);
+                    // Ricavare il titolo, l'URL dell'immagine di copertina, l'autore, il numero di pagine, la lingua, il voto e la trama del libro
+                    $.get("https://www.googleapis.com/books/v1/volumes/"+id_libro+"?key=AIzaSyBFzl0QHgg6tPybSNW0DMxAQF40oQFFKqA", function (response) {
+                        titolo = response.volumeInfo.title;
+                        var autore = "";
+                        if(response.volumeInfo.hasOwnProperty('authors'))
+                            response.volumeInfo.authors.forEach(function(name) {
+                                autore += autore == "" ? name : ", "+name;
+                            });
+                        pagine = response.volumeInfo.pageCount;
+                        lingua = response.volumeInfo.language;
+                        trama = response.volumeInfo.description;
+                        copertina = response.volumeInfo.imageLinks.medium;
+                        $('.copertina').css("background-image", "url("+copertina+")");
+                        $('.info > h1').text(titolo);
+                        $('.info > h2').text(autore);
+                        $('.info > .pagine').text(pagine);
+                        $('.info > .lingua').text(lingua);
+                        $('.info > span').last().html(trama);
+                    });
+
+                    // Scrivere il titolo, l'URL dell'immagine di copertina, l'autore, il numero di pagine, la lingua, il voto e la trama del libro sulla pagina
+                    //
+                    // Se il libro è già presente nella libreria dell'utente, eliminare il tasto "Aggiungi alla mia libreria"
+
+
+
+
+
+                };
+                (function(d, s, id) {
+                    var js, fjs = d.getElementsByTagName(s)[0];
+                    if (d.getElementById(id)) return;
+                    js = d.createElement(s); js.id = id;
+                    js.src = 'https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v2.12';
+                    fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));
+            });
         </script>
     </head>
     <body>
@@ -30,7 +78,7 @@
         </header>
         <div class="container">
             <nav>
-                <a href="profile.html"><img src="img/user.jpg" /> <span>Nome Cognome</span></a>
+                <a href="profile.html" class="current"><img src="img/user.svg" /><span></span></a>
                 <a href="reading.html">In lettura</a>
                 <a href="to-read.html">Da leggere</a>
                 <a href="read.html">Letti</a>
@@ -38,18 +86,17 @@
             </nav>
             <div class="book">
                 <div class="left">
-                    <div class="copertina" style="background-image: url(img/libri/it-stephen-king.jpg);"></div>
+                    <div class="copertina"></div>
                     <div class="pages">
                         <a href="javascript:addToLibrary('ID_DEL_LIBRO');" class="button green">Aggiungi alla mia libreria</a>
                     </div>
                 </div>
                 <div class="info">
-                    <h1>IT</h1>
-                    <h2>Stephen King</h2>
-                    <span class="pagine">1168</span><br />
-                    <span class="lingua">Italiano</span><br />
-                    <span class="voto">4,7/5</span><br />
-                    <span>A Derry , una piccola cittadina del Maine, l'autunno si è annunciato con una pioggia torrenziale che sembra non finire mai. Per un bambino come George Denbrough, ben coperto dal suo impermeabile giallo, il più grande divertimento è seguire la barchetta di carta che gli ha costruito il fratello maggiore Bill. Ma le strade sono sdrucciolevoli e George rischia di perdere il suo giocattolo, che infatti si infila in un canale di scolo lungo il marciapiede e sparisce nelle viscere della terra. Cercare di recuperarlo è l'ultimo gesto di George: una creatura spaventosa travestita da clown gli strappa un braccio uccidendolo. A combattere It, il mostro misterioso che prende la forma delle nostre peggiori paure, rimangono Bill e il gruppo di amici con i quali ha fondato il Club dei Perdenti, sette ragazzini capaci di immaginare un mondo senza mostri. Ma It è un nemico implacabile e per sconfiggerlo i ragazzi devono affrontare prove durissime e rischiare la loro stessa vita. E se l'estate successiva, che li ritrova giovani adulti, sembra quella della sconfitta di It, i Perdenti sanno di dover fare una promessa: qualunque cosa succeda, torneranno a Derry per combattere ancora. A Derry , una piccola cittadina del Maine, l'autunno si è annunciato con una pioggia torrenziale che sembra non finire mai. Per un bambino come George Denbrough, ben coperto dal suo impermeabile giallo, il più grande divertimento è seguire la barchetta di carta che gli ha costruito il fratello maggiore Bill. Ma le strade sono sdrucciolevoli e George rischia di perdere il suo giocattolo, che infatti si infila in un canale di scolo lungo il marciapiede e sparisce nelle viscere della terra. Cercare di recuperarlo è l'ultimo gesto di George: una creatura spaventosa travestita da clown gli strappa un braccio uccidendolo. A combattere It, il mostro misterioso che prende la forma delle nostre peggiori paure, rimangono Bill e il gruppo di amici con i quali ha fondato il Club dei Perdenti, sette ragazzini capaci di immaginare un mondo senza mostri. Ma It è un nemico implacabile e per sconfiggerlo i ragazzi devono affrontare prove durissime e rischiare la loro stessa vita. E se l'estate successiva, che li ritrova giovani adulti, sembra quella della sconfitta di It, i Perdenti sanno di dover fare una promessa: qualunque cosa succeda, torneranno a Derry per combattere ancora.</span>
+                    <h1></h1>
+                    <h2></h2>
+                    <span class="pagine"></span><br />
+                    <span class="lingua"></span><br />
+                    <span></span>
                 </div>
             </div>
         </div>

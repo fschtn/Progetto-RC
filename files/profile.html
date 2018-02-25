@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>NOME UTENTE — Book time</title>
+        <title>Profilo - Book time</title>
         <meta charset="utf-8" />
         <link href="style.css" type="text/css" rel="stylesheet" />
         <script type="text/javascript" src="js/jquery.js"></script>
@@ -16,13 +16,22 @@
                         xfbml: true,
                         version    : 'v2.11'
                     });
+
+                    // Quando l'istanza di FB è stata creata, richiamo la funzione pageLoad()
                     FB.getLoginStatus(function(response) {
                         pageLoad();
-                        inserisciNomeNelTitolo();
-
-                        // Ottenere l'elenco degli ultimi 6 libri appartenente a ciascuna categoria (in lettura, da leggere, letti) e mostrarli sulla pagina, nelle sezioni corrispondenti
-
                     });
+
+
+
+
+
+                    // Ottenere l'elenco degli ultimi 6 libri appartenente a ciascuna categoria (in lettura, da leggere, letti) e mostrarli sulla pagina, nelle sezioni corrispondenti
+
+
+
+
+
                 };
                 (function(d, s, id) {
                     var js, fjs = d.getElementsByTagName(s)[0];
@@ -45,7 +54,7 @@
         </header>
         <div class="container">
             <nav>
-                <a href="profile.html" class="current"><img src="img/user.jpg" /> <span>Nome Cognome</span></a>
+                <a href="profile.html" class="current"><img src="img/user.svg" /><span></span></a>
                 <a href="reading.html">In lettura</a>
                 <a href="to-read.html">Da leggere</a>
                 <a href="read.html">Letti</a>

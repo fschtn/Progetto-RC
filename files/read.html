@@ -7,9 +7,36 @@
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
         <script>
+            $(document).ready(function () {
+                window.fbAsyncInit = function () {
+                    FB.init({
+                        appId: '194992524408368',
+                        status: true,
+                        cookie: true,
+                        xfbml: true,
+                        version    : 'v2.11'
+                    });
 
-            // Ottenere tutti i libri letti dall'utente e mostrarli all'interno della pagina —> getList("past", 100)
+                    // Quando l'istanza di FB è stata creata, richiamo la funzione pageLoad()
+                    FB.getLoginStatus(function(response) {
+                        pageLoad();
 
+
+
+                        // Ottenere tutti i libri letti dall'utente e mostrarli all'interno della pagina —> getList("past", 100)
+
+
+
+                    });
+                };
+                (function(d, s, id) {
+                    var js, fjs = d.getElementsByTagName(s)[0];
+                    if (d.getElementById(id)) return;
+                    js = d.createElement(s); js.id = id;
+                    js.src = 'https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v2.12';
+                    fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));
+            });
         </script>
     </head>
     <body>
@@ -23,10 +50,10 @@
         </header>
         <div class="container">
             <nav>
-                <a href="profile.html"><img src="img/user.jpg" /> <span>Nome Cognome</span></a>
+                <a href="profile.html" class="current"><img src="img/user.svg" /><span></span></a>
                 <a href="reading.html">In lettura</a>
                 <a href="to-read.html">Da leggere</a>
-                <a href="read.html" class="current">Letti</a>
+                <a href="read.html">Letti</a>
                 <a href="logout.html">Logout</a>
             </nav>
             <div class="libri">
