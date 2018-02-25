@@ -13,7 +13,7 @@
         <meta charset="utf-8" />
         <link href="style.css" type="text/css" rel="stylesheet" />
         <script type="text/javascript" src="js/jquery.js"></script>
-        <script type="text/javascript" src="js/script.js"></script>
+        <!-- <script type="text/javascript" src="js/script.js"></script> -->
         <meta name="google-signin-scope" content="profile email">
         <meta name="google-signin-client_id" content="522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com">
         <script src="https://apis.google.com/js/platform.js" async defer></script>
@@ -24,8 +24,78 @@
             }
         </style>
     </head>
-    <body>
+    <body onload="checkLogin()">
         <script>
+            $(document).ready(function () {
+                window.fbAsyncInit = function () {
+                    FB.init({
+                        appId: '194992524408368',
+                        status: true,
+                        cookie: true,
+                        xfbml: true,
+                        version    : 'v2.11'
+                    });
+
+                    // checkLogin();
+
+                };
+                (function(d, s, id) {
+                    var js, fjs = d.getElementsByTagName(s)[0];
+                    if (d.getElementById(id)) return;
+                    js = d.createElement(s); js.id = id;
+                    js.src = 'https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v2.12';
+                    fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));
+
+            });
+
+            var a;
+            function controllaAccessoFacebook() {
+                FB.getLoginStatus(function(response) {
+                    if(response.status == 'connected') {
+                        a = true;
+                    }else{
+                        a = false;
+                    }
+                });
+                return a;
+            }
+
+
+            function checkLogin() {
+                console.log("funzione check");
+                console.log(controllaAccessoFacebook());
+                    if(document.location.pathname == "/") {
+                        if(controllaAccessoGoogle() && controllaAccessoFacebook()) {
+                            window.location.href = '/profile.html';
+                        }else{
+                            if(controllaAccessoGoogle()){
+                                if(!$('#login_buttons > .google').hasClass("logged")){
+                                    $('#login_buttons > .google').addClass("logged");
+                                }
+                            }
+                            if(controllaAccessoFacebook()) {
+                                if(!$('#login_buttons > .fb').hasClass("logged")){
+                                    $('#login_buttons > .fb').addClass("logged");
+                                }
+                            }
+                        }
+                    }else{
+                        if(!controllaAccessoGoogle() || !controllaAccessoFacebook()) {
+                            window.location.href = '/';
+
+                        }
+                    }
+            }
+
+            function controllaAccessoGoogle() {
+                // Se l'utente ha fatto l'accesso, restituisce "true", altrimenti restituisce "false"
+                // gapi.auth.checkSessionState({client_id:'522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com'}, signinCallback);
+                // gapi.auth2.getAuthInstance().isSignedIn.get();
+                return false;
+            }
+
+
             function GoogleLogin(googleUser) {
                 // checkLogin();
                 // var profile = googleUser.getBasicProfile();
@@ -49,7 +119,7 @@
                 <span>
                     <img src="img/facebook.svg" /><br />
                     L'accesso con Facebook è necessario affinchè tu possa essere riconosciuto dal sistema, avere un'identità e cercare più facilmente i tuoi amici.<br />
-                    <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="true" scope="public_profile,email" onlogin="checkLogin();"></div>
+                    <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="true" scope="public_profile,email"></div>
                 </span>
             </div>
             <div class="google">

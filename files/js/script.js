@@ -1,14 +1,5 @@
-var logged;
 $(document).ready(function () {
-
-    FB.getLoginStatus(function(response) {
-      	if(response.status == 'connected') {
-            logged = true;
-      	}else{
-            logged = false;
-        }
-    });
-
+    console.log("ciao");
     window.fbAsyncInit = function () {
         FB.init({
             appId: '194992524408368',
@@ -17,12 +8,9 @@ $(document).ready(function () {
             xfbml: true,
             version    : 'v2.11'
         });
-
-
-        // FB.getLoginStatus(function(response) {
-        //     checkLogin();
-        // });
+        pageLoad();
     };
+
     (function(d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
@@ -31,7 +19,7 @@ $(document).ready(function () {
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 
-    pageLoad();
+
 
 
 
@@ -87,14 +75,15 @@ function pageLoad() {
     $('nav a span').text(getUserName());
 }
 
+var logged = false;
 function controllaAccessoFacebook() {
-    // FB.getLoginStatus(function(response) {
-    //   	if(response.status == 'connected') {
-    //         logged = true;
-    //   	}else{
-    //         logged = false;
-    //     }
-    // });
+    FB.getLoginStatus(function(response) {
+      	if(response.status == 'connected') {
+            logged = true;
+      	}else{
+            logged = false;
+        }
+    });
     return logged;
 }
 
