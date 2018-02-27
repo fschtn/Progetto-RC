@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Logout - Book time</title>
+        <meta charset="utf-8" />
+        <link href="style.css" type="text/css" rel="stylesheet" />
+        <meta name="google-signin-scope" content="profile email">
+        <meta name="google-signin-client_id" content="522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com">
+        <script src="https://apis.google.com/js/platform.js"></script>
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/script.js"></script>
+        <style>
+            body {
+                text-align: center;
+                font-size: 24px;
+                font-weight: 300;
+                color: #aaa;
+                letter-spacing: 1px;
+            }
+            b {
+                font-size: 150%;
+                display: block;
+                margin-bottom: 15px;
+                color: #101010;
+            }
+        </style>
+        <script>
+            $(document).ready(function () {
+
+                // CARICAMENTO API FACEBOOK
+
+                window.fbAsyncInit = function () {
+                    FB.init({
+                        appId: '194992524408368',
+                        status: true,
+                        cookie: true,
+                        xfbml: true,
+                        version    : 'v2.11'
+                    });
+                    FB.getLoginStatus(function(response) {
+                        facebook_loaded = true;
+                        console.log("API Facebook caricata");
+                    });
+                };
+                (function(d, s, id) {
+                    var js, fjs = d.getElementsByTagName(s)[0];
+                    if (d.getElementById(id)) return;
+                    js = d.createElement(s); js.id = id;
+                    js.src = 'https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v2.12';
+                    fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));
+
+                // CARICAMENTO API GOOGLE
+
+                gapi.load('auth2', function() {
+                    google_loaded = true;
+                    console.log("API Google caricata");
+                    google_auth = gapi.auth2.init({
+                        client_id: '522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com'
+                    });
+                });
+
+                // INTERVALLO CHE ESEGUE IL LOGOUT SOLO QUANDO LE API SONO STATE CARICATE
+
+                var logout = false;
+                setInterval(function() {
+                    if(facebook_loaded && google_loaded) {
+                        google_auth.signOut().then(function() {
+                            console.log("Sloggato da Google");
+                            FB.logout(function(response) {
+                                console.log("Sloggato da Facebook");
+                                window.location.href = "/";
+                            });
+                        });
+                    }
+                }, 50);
+
+            });
+        </script>
+    </head>
+    <body>
+        <b>Logout</b>
+        Attendere prego
+    </body>
+</html>

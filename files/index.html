@@ -12,22 +12,22 @@
         <title>Book time</title>
         <meta charset="utf-8" />
         <link href="style.css" type="text/css" rel="stylesheet" />
-        <script type="text/javascript" src="js/jquery.js"></script>
-        <script type="text/javascript" src="js/script.js"></script>
         <meta name="google-signin-scope" content="profile email">
         <meta name="google-signin-client_id" content="522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com">
-        <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <script src="https://apis.google.com/js/platform.js"></script>
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/script.js"></script>
         <style>
             body {
                 background-color: #16a085;
                 padding: 0;
             }
         </style>
-    </head>
-    <body>
         <script>
-
             $(document).ready(function () {
+
+                // CARICAMENTO FACEBOOK
+
                 window.fbAsyncInit = function () {
                     FB.init({
                         appId: '194992524408368',
@@ -36,11 +36,10 @@
                         xfbml: true,
                         version    : 'v2.11'
                     });
-
                     FB.getLoginStatus(function(response) {
-                        pageLoad();
+                        facebook_loaded = true;
+                        console.log("API Facebook caricata");
                     });
-
                 };
                 (function(d, s, id) {
                     var js, fjs = d.getElementsByTagName(s)[0];
@@ -50,21 +49,35 @@
                     fjs.parentNode.insertBefore(js, fjs);
                 }(document, 'script', 'facebook-jssdk'));
 
-            });
+                // CARICAMENTO GOOGLE
 
-            function GoogleLogin(googleUser) {
-                // checkLogin();
-                // var profile = googleUser.getBasicProfile();
-                // console.log("ID: " + profile.getId());
-                // console.log('Full Name: ' + profile.getName());
-                // console.log('Given Name: ' + profile.getGivenName());
-                // console.log('Family Name: ' + profile.getFamilyName());
-                // console.log("Image URL: " + profile.getImageUrl());
-                // console.log("Email: " + profile.getEmail());
-                // var id_token = googleUser.getAuthResponse().id_token;
-                // console.log("ID Token: " + id_token);
-            };
+                gapi.load('auth2', function() {
+                    google_loaded = true;
+                    console.log("API Google caricata");
+                    google_auth = gapi.auth2.init({
+                        client_id: '522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com'
+                    });
+                });
+
+                // INTERVALLO CHE CARICA LA PAGINA SOLO QUANDO SONO STATI CARICATI SIA GOOGLE CHE FACEBOOK
+
+                var page_loaded = false;
+                setInterval(function() {
+                    if(facebook_loaded && google_loaded) {
+                        if(!page_loaded) {
+                            console.log("Carico la pagina");
+                            pageLoad();
+                            page_loaded = true;
+                        }
+                        console.log("Controllo gli accessi");
+                        checkLogin();
+                    }
+                }, 250);
+
+            });
         </script>
+    </head>
+    <body>
         <div class="container" id="login">
             <img src="img/logo.png" alt="Logo" /><br />
             <h1>Book Time</h1>

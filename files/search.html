@@ -13,10 +13,16 @@
         <title>Libri da leggere - Book time</title>
         <meta charset="utf-8" />
         <link href="style.css" type="text/css" rel="stylesheet" />
+        <meta name="google-signin-scope" content="profile email">
+        <meta name="google-signin-client_id" content="522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com">
+        <script src="https://apis.google.com/js/platform.js"></script>
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
         <script>
             $(document).ready(function () {
+
+                // CARICAMENTO FACEBOOK
+
                 window.fbAsyncInit = function () {
                     FB.init({
                         appId: '194992524408368',
@@ -25,10 +31,9 @@
                         xfbml: true,
                         version    : 'v2.11'
                     });
-
-                    // Quando l'istanza di FB è stata creata, richiamo la funzione pageLoad()
                     FB.getLoginStatus(function(response) {
-                        pageLoad();
+                        facebook_loaded = true;
+                        console.log("API Facebook caricata");
                     });
                 };
                 (function(d, s, id) {
@@ -38,6 +43,35 @@
                     js.src = 'https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v2.12';
                     fjs.parentNode.insertBefore(js, fjs);
                 }(document, 'script', 'facebook-jssdk'));
+
+                // CARICAMENTO GOOGLE
+
+                gapi.load('auth2', function() {
+                    google_loaded = true;
+                    console.log("API Google caricata");
+                    google_auth = gapi.auth2.init({
+                        client_id: '522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com'
+                    });
+                });
+
+                // INTERVALLO CHE CARICA LA PAGINA SOLO QUANDO SONO STATI CARICATI SIA GOOGLE CHE FACEBOOK
+
+                var page_loaded = false;
+                setInterval(function() {
+                    if(facebook_loaded && google_loaded) {
+                        if(!page_loaded) {
+                            console.log("Carico la pagina");
+                            pageLoad();
+                            page_loaded = true;
+                        }
+                        console.log("Controllo gli accessi");
+                        checkLogin();
+                    }
+                }, 50);
+
+
+                // ——————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
 
                 // Ottengo la stringa di testo cercata
                 // e la mostro la stringa ricercata all'interno della pagina e nella barra del titolo

@@ -4,10 +4,16 @@
         <title>Dettagli libro - Book time</title>
         <meta charset="utf-8" />
         <link href="style.css" type="text/css" rel="stylesheet" />
+        <meta name="google-signin-scope" content="profile email">
+        <meta name="google-signin-client_id" content="522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com">
+        <script src="https://apis.google.com/js/platform.js"></script>
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
         <script>
             $(document).ready(function () {
+
+                // CARICAMENTO FACEBOOK
+
                 window.fbAsyncInit = function () {
                     FB.init({
                         appId: '194992524408368',
@@ -16,46 +22,10 @@
                         xfbml: true,
                         version    : 'v2.11'
                     });
-
-                    // Quando l'istanza di FB è stata creata, richiamo la funzione pageLoad()
                     FB.getLoginStatus(function(response) {
-                        pageLoad();
+                        facebook_loaded = true;
+                        console.log("API Facebook caricata");
                     });
-
-
-
-
-
-                    // Ottenere l'ID del libro da visualizzare dall'URL della pagina
-                    id_libro = window.location.search.substr(4, window.location.search.length);
-                    // Ricavare il titolo, l'URL dell'immagine di copertina, l'autore, il numero di pagine, la lingua, il voto e la trama del libro
-                    $.get("https://www.googleapis.com/books/v1/volumes/"+id_libro+"?key=AIzaSyBFzl0QHgg6tPybSNW0DMxAQF40oQFFKqA", function (response) {
-                        titolo = response.volumeInfo.title;
-                        var autore = "";
-                        if(response.volumeInfo.hasOwnProperty('authors'))
-                            response.volumeInfo.authors.forEach(function(name) {
-                                autore += autore == "" ? name : ", "+name;
-                            });
-                        pagine = response.volumeInfo.pageCount;
-                        lingua = response.volumeInfo.language;
-                        trama = response.volumeInfo.description;
-                        copertina = response.volumeInfo.imageLinks.medium;
-                        $('.copertina').css("background-image", "url("+copertina+")");
-                        $('.info > h1').text(titolo);
-                        $('.info > h2').text(autore);
-                        $('.info > .pagine').text(pagine);
-                        $('.info > .lingua').text(lingua);
-                        $('.info > span').last().html(trama);
-                    });
-
-                    // Scrivere il titolo, l'URL dell'immagine di copertina, l'autore, il numero di pagine, la lingua, il voto e la trama del libro sulla pagina
-                    //
-                    // Se il libro è già presente nella libreria dell'utente, eliminare il tasto "Aggiungi alla mia libreria"
-
-
-
-
-
                 };
                 (function(d, s, id) {
                     var js, fjs = d.getElementsByTagName(s)[0];
@@ -64,6 +34,64 @@
                     js.src = 'https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v2.12';
                     fjs.parentNode.insertBefore(js, fjs);
                 }(document, 'script', 'facebook-jssdk'));
+
+                // CARICAMENTO GOOGLE
+
+                gapi.load('auth2', function() {
+                    google_loaded = true;
+                    console.log("API Google caricata");
+                    google_auth = gapi.auth2.init({
+                        client_id: '522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com'
+                    });
+                });
+
+                // INTERVALLO CHE CARICA LA PAGINA SOLO QUANDO SONO STATI CARICATI SIA GOOGLE CHE FACEBOOK
+
+                var page_loaded = false;
+                setInterval(function() {
+                    if(facebook_loaded && google_loaded) {
+                        if(!page_loaded) {
+                            console.log("Carico la pagina");
+                            pageLoad();
+                            page_loaded = true;
+                        }
+                        console.log("Controllo gli accessi");
+                        checkLogin();
+                    }
+                }, 50);
+
+                // Ottenere l'ID del libro da visualizzare dall'URL della pagina
+                id_libro = window.location.search.substr(4, window.location.search.length);
+                // Ricavare il titolo, l'URL dell'immagine di copertina, l'autore, il numero di pagine, la lingua, il voto e la trama del libro
+                $.get("https://www.googleapis.com/books/v1/volumes/"+id_libro+"?key=AIzaSyBFzl0QHgg6tPybSNW0DMxAQF40oQFFKqA", function (response) {
+                    titolo = response.volumeInfo.title;
+                    var autore = "";
+                    if(response.volumeInfo.hasOwnProperty('authors'))
+                        response.volumeInfo.authors.forEach(function(name) {
+                            autore += autore == "" ? name : ", "+name;
+                        });
+                    pagine = response.volumeInfo.pageCount;
+                    lingua = response.volumeInfo.language;
+                    trama = response.volumeInfo.description;
+                    copertina = response.volumeInfo.imageLinks.medium;
+                    $('.copertina').css("background-image", "url("+copertina+")");
+                    $('.info > h1').text(titolo);
+                    $('.info > h2').text(autore);
+                    $('.info > .pagine').text(pagine);
+                    $('.info > .lingua').text(lingua);
+                    $('.info > span').last().html(trama);
+                });
+
+
+
+
+
+                // Se il libro è già presente nella libreria dell'utente, eliminare il tasto "Aggiungi alla mia libreria"
+
+
+
+
+
             });
         </script>
     </head>

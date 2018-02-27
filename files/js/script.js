@@ -1,5 +1,8 @@
 var accesso_facebook;
 var facebook_access_token;
+var google_auth;
+var facebook_loaded;
+var google_loaded;
 
 function pageLoad() {
     checkLogin();
@@ -8,7 +11,6 @@ function pageLoad() {
 
 
     // Aggiungere funzione che mostra la pagina, in modo da nasconderla prima che tutte le info siano caricate
-
 
 
 }
@@ -44,10 +46,7 @@ function controllaAccessoFacebook() {
 }
 
 function controllaAccessoGoogle() {
-    // Se l'utente ha fatto l'accesso, restituisce "true", altrimenti restituisce "false"
-    // gapi.auth.checkSessionState({client_id:'522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com'}, signinCallback);
-    // gapi.auth2.getAuthInstance().isSignedIn.get();
-    return true;
+    return google_auth.isSignedIn.get();
 }
 
 function ottieniInfoUtente() {

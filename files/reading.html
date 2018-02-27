@@ -4,10 +4,16 @@
         <title>Libri in lettura - Book time</title>
         <meta charset="utf-8" />
         <link href="style.css" type="text/css" rel="stylesheet" />
+        <meta name="google-signin-scope" content="profile email">
+        <meta name="google-signin-client_id" content="522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com">
+        <script src="https://apis.google.com/js/platform.js"></script>
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
         <script>
             $(document).ready(function () {
+
+                // CARICAMENTO FACEBOOK
+
                 window.fbAsyncInit = function () {
                     FB.init({
                         appId: '194992524408368',
@@ -16,23 +22,9 @@
                         xfbml: true,
                         version    : 'v2.11'
                     });
-
-                    // Quando l'istanza di FB è stata creata, richiamo la funzione pageLoad()
                     FB.getLoginStatus(function(response) {
-                        pageLoad();
-
-                        // Ottenere i libri che l'utente sta leggendo e mostrarli sulla pagina
-                        //
-                        // Per ciascun libro, ottnere le informazioni da mostrare di fianco alla copertina
-                        //
-                        // Per ciascun libro iniziato, ottenere anche la pagina attualmente registrata come "in lettura" e mostrarla nel form, in modo che l'utente possa modificarla
-                        //
-                        // Aggiungere funzione che, quando si modifica la pagina attualmente letta dall'utente, la aggiorna all'interno delle informazioni
-                        //
-                        // Fare in modo che, cliccando il tasto "Completato" o "Rimuovi dalla libreria" sotto il titolo del libro, esso venga segnalato come Completato o rimosso dalla libreria
-
-
-
+                        facebook_loaded = true;
+                        console.log("API Facebook caricata");
                     });
                 };
                 (function(d, s, id) {
@@ -42,6 +34,50 @@
                     js.src = 'https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v2.12';
                     fjs.parentNode.insertBefore(js, fjs);
                 }(document, 'script', 'facebook-jssdk'));
+
+                // CARICAMENTO GOOGLE
+
+                gapi.load('auth2', function() {
+                    google_loaded = true;
+                    console.log("API Google caricata");
+                    google_auth = gapi.auth2.init({
+                        client_id: '522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com'
+                    });
+                });
+
+                // INTERVALLO CHE CARICA LA PAGINA SOLO QUANDO SONO STATI CARICATI SIA GOOGLE CHE FACEBOOK
+
+                var page_loaded = false;
+                setInterval(function() {
+                    if(facebook_loaded && google_loaded) {
+                        if(!page_loaded) {
+                            console.log("Carico la pagina");
+                            pageLoad();
+                            page_loaded = true;
+                        }
+                        console.log("Controllo gli accessi");
+                        checkLogin();
+                    }
+                }, 250);
+
+
+
+
+
+                // Ottenere i libri che l'utente sta leggendo e mostrarli sulla pagina
+
+                // Per ciascun libro, ottnere le informazioni da mostrare di fianco alla copertina
+
+                // Per ciascun libro iniziato, ottenere anche la pagina attualmente registrata come "in lettura" e mostrarla nel form, in modo che l'utente possa modificarla
+
+                // Aggiungere funzione che, quando si modifica la pagina attualmente letta dall'utente, la aggiorna all'interno delle informazioni
+
+                // Fare in modo che, cliccando il tasto "Completato" o "Rimuovi dalla libreria" sotto il titolo del libro, esso venga segnalato come Completato o rimosso dalla libreria
+
+
+
+
+
             });
         </script>
     </head>
@@ -56,8 +92,8 @@
         </header>
         <div class="container">
             <nav>
-                <a href="profile.html" class="current"><img src="img/user.svg" /><span></span></a>
-                <a href="reading.html">In lettura</a>
+                <a href="profile.html"><img src="img/user.svg" /><span></span></a>
+                <a href="reading.html" class="current">In lettura</a>
                 <a href="to-read.html">Da leggere</a>
                 <a href="read.html">Letti</a>
                 <a href="logout.html">Logout</a>
