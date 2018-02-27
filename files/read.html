@@ -47,9 +47,8 @@
                     }
                 }, 250);
 
-                if(getUrlParameter('access_token') != "") {
-                    localStorage.GoogleAccessToken = getUrlParameter('access_token');
-                }
+
+                // ————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 
 
@@ -60,9 +59,9 @@
 
 
                 // Ottenere tutti i libri letti dall'utente e mostrarli all'interno della pagina —> getList("past", 100)
-                $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves?key=AIzaSyBFzl0QHgg6tPybSNW0DMxAQF40oQFFKqA&access_token=ya29.GltvBTZM0cGlvjHz3ZCTQaOZEsVFT4rc0kb45ODQmjb8W-bD83cj_ltTz6oa8TlT7coQq6rqTgU53A4GYs0HLGvnQ_pnsYCjYLQtO0gCfCmJJpdXP8T6VpcgEf_h", function(res) {
-                    console.log(res);
-                });
+                // $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves?key=AIzaSyBFzl0QHgg6tPybSNW0DMxAQF40oQFFKqA&access_token=ya29.GltvBTZM0cGlvjHz3ZCTQaOZEsVFT4rc0kb45ODQmjb8W-bD83cj_ltTz6oa8TlT7coQq6rqTgU53A4GYs0HLGvnQ_pnsYCjYLQtO0gCfCmJJpdXP8T6VpcgEf_h", function(res) {
+                //     console.log(res);
+                // });
 
 
 
