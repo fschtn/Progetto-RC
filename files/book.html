@@ -53,6 +53,7 @@
 
                 // Ottenere l'ID del libro da visualizzare dall'URL della pagina
                 id_libro = window.location.search.substr(4, window.location.search.length);
+
                 // Ricavare il titolo, l'URL dell'immagine di copertina, l'autore, il numero di pagine, la lingua, il voto e la trama del libro
                 $.get("https://www.googleapis.com/books/v1/volumes/"+id_libro+"?key=AIzaSyBFzl0QHgg6tPybSNW0DMxAQF40oQFFKqA", function (response) {
                     titolo = response.volumeInfo.title;
@@ -66,6 +67,7 @@
                     trama = response.volumeInfo.description;
                     copertina = response.volumeInfo.imageLinks.medium;
                     $('.copertina').css("background-image", "url("+copertina+")");
+                    $('#add_to_library').attr("href","javascript:addToLibrary('"+id_libro+"');");
                     $('.info > h1').text(titolo);
                     $('.info > h2').text(autore);
                     $('.info > .pagine').text(pagine);
@@ -79,7 +81,6 @@
 
                 // Se il libro è già presente nella libreria dell'utente, eliminare il tasto "Aggiungi alla mia libreria"
 
-                // Completare funzione addToLibrary in /js/script.js che inserisce il libro attuale nella libreria "da leggere" dell'utente attuale
 
 
 
@@ -109,7 +110,7 @@
                 <div class="left">
                     <div class="copertina"></div>
                     <div class="pages">
-                        <a href="javascript:addToLibrary('ID_DEL_LIBRO');" class="button green">Aggiungi alla mia libreria</a>
+                        <a href="javascript:alert('Attendi qualche secondo prima di aggiungere i libri in libreria!');" id="add_to_library" class="button green">Aggiungi alla mia libreria</a>
                     </div>
                 </div>
                 <div class="info">

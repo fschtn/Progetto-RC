@@ -47,24 +47,10 @@
                     }
                 }, 250);
 
-
                 // ————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-
-
-
-
-
-
-
-
                 // Ottenere tutti i libri letti dall'utente e mostrarli all'interno della pagina —> getList("past", 100)
-                // $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves?key=AIzaSyBFzl0QHgg6tPybSNW0DMxAQF40oQFFKqA&access_token=ya29.GltvBTZM0cGlvjHz3ZCTQaOZEsVFT4rc0kb45ODQmjb8W-bD83cj_ltTz6oa8TlT7coQq6rqTgU53A4GYs0HLGvnQ_pnsYCjYLQtO0gCfCmJJpdXP8T6VpcgEf_h", function(res) {
-                //     console.log(res);
-                // });
-
-
-
+                carica_libreria("Have read");
 
             });
         </script>
@@ -86,44 +72,7 @@
                 <a href="read.html" class="current">Letti</a>
                 <a href="logout.html">Logout</a>
             </nav>
-            <div class="libri">
-                <div class="cover" style="background-image: url(img/libri/e-buonanotte-daniele-doesn-t-matter.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>E buonanotte</h1>
-                        <h2>Daniele doesn't matter</h2>
-                    </a>
-                </div>
-                <div class="cover" style="background-image: url(img/libri/four-veronica-roth.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>Four</h1>
-                        <h2>Veronica Roth</h2>
-                    </a>
-                </div>
-                <div class="cover" style="background-image: url(img/libri/il-rumore-della-pioggia-gigi-paoli.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>Il rumore della pioggia</h1>
-                        <h2>Gigi Paoli</h2>
-                    </a>
-                </div>
-                <div class="cover" style="background-image: url(img/libri/in-mare-aperto-clive-cussler.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>In mare aperto</h1>
-                        <h2>Clive Cussler</h2>
-                    </a>
-                </div>
-                <div class="cover" style="background-image: url(img/libri/it-stephen-king.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>IT</h1>
-                        <h2>Stephen King</h2>
-                    </a>
-                </div>
-                <div class="cover" style="background-image: url(img/libri/la-caduta-dei-giganti-ken-follett.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>La caduta dei giganti</h1>
-                        <h2>Ken Follett</h2>
-                    </a>
-                </div>
-            </div>
+            <div class="libri"></div>
         </div>
     </body>
 </html>

@@ -49,7 +49,7 @@
 
 
                 // ————————————————————————————————————————————————————————————————————————————————————————————————————————
-                
+
 
 
                 // Ottengo la stringa di testo cercata
@@ -62,7 +62,7 @@
                 // Definisco le variabili per le ricerche e
                 // creo un intervallo di 500ms durante il quale eseguo le ricerche
                 var start = 0;
-                var dettagli_ricerca = "&printType=books&orderBy=relevance&filter=paid-ebooks&maxResults=8&key=AIzaSyBFzl0QHgg6tPybSNW0DMxAQF40oQFFKqA";
+                var dettagli_ricerca = "&printType=books&orderBy=relevance&filter=paid-ebooks&maxResults=8&key="+google_api_key;
                 var continua_ricerca = true;
                 var ricerca_libri = setInterval(function() {
                     // Se la ricerca deve continuare,

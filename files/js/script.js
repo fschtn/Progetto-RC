@@ -1,6 +1,9 @@
 var accesso_facebook;
 var facebook_access_token;
 var facebook_loaded;
+var google_api_key = "AIzaSyBFzl0QHgg6tPybSNW0DMxAQF40oQFFKqA";
+var google_access_token = localStorage.GoogleAccessToken;
+var id_libreria;
 
 function pageLoad() {
     checkLogin();
@@ -71,6 +74,27 @@ var getUrlParameter = function getUrlParameter(sParam) {
     }
 };
 
+// Definisco la funzione di creazione di un nuovo libro
+// che verrà richiamata per ciascun risultato trovato dalla ricerca
+function crea_libro(item) {
+    libro = $("<div></div>");
+    link = $("<a></a>");
+    titolo = $("<h1></h1>");
+    autore = $("<h2></h2>");
+    titolo_text = item.volumeInfo.title.length > 30 ? item.volumeInfo.title.substr(0,27)+"..." : item.volumeInfo.title;
+    titolo.append(titolo_text);
+    if(item.volumeInfo.hasOwnProperty('authors'))
+        autore.append(item.volumeInfo.authors[0]);
+    link.append(titolo);
+    link.append(autore);
+    link.addClass("info");
+    link.attr("href","book.html?id="+item.id);
+    libro.append(link);
+    libro.addClass("cover");
+    libro.css("background-image", "url("+item.volumeInfo.imageLinks.thumbnail+")");
+    $('.libri').append(libro);
+}
+
 
 
 
@@ -83,15 +107,75 @@ var getUrlParameter = function getUrlParameter(sParam) {
 //
 //
 
+function carica_libreria(nome) {
+    $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves?key="+google_api_key+"&access_token="+google_access_token, function(res) {
+        if(res.hasOwnProperty('items')) {
+            if(res.items.length > 0) {
+                res.items.forEach(function(item) {
+                    // console.log(item);
+                    if(item.title == nome) {
+                        $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves/"+item.id+"/volumes?key="+google_api_key+"&access_token="+google_access_token, function(res) {
+                            if(res.hasOwnProperty('items')) {
+                                if(res.items.length > 0) {
+                                    res.items.forEach(crea_libro);
+                                }else{
+                                    $('.libri').append("<span>Nella libreria attuale non c'è ancora nessun libro</span>");
+                                }
+                            }else{
+                                $('.libri').append("<span>Nella libreria attuale non c'è ancora nessun libro</span>");
+                            }
+                        });
+                    }
+                });
+            }else{
+                $('.libri').append("<span>Impossibile ottenere la libreria attuale</span>");
+            }
+        }else{
+            $('.libri').append("<span>L'utente attuale non ha nessuna libreria da mostrare</span>");
+        }
+    });
+}
+
+function addToLibrary(id) {
+    $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves?key="+google_api_key+"&access_token="+google_access_token, function(res) {
+        if(res.hasOwnProperty('items')) {
+            if(res.items.length > 0) {
+                res.items.forEach(function(item) {
+                    if(item.title == "To read") {
+                        $.ajax({
+                            url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/'+item.id+'/addVolume?volumeId='+id+'&key='+google_api_key+'&access_token='+google_access_token,
+                            type:"POST",
+                            contentType:"application/json",
+                            success: function(res){
+                                if(res == undefined) {
 
 
 
 
 
-function addToLibrary(id, library) {
-//         id = id del libro
-//         library = [past,present,future]
-//     Aggiunge il libro avente <id> all'interno della libreria <library>
+
+
+                                    // MOSTRA UN MESSAGGIO DI FELICITAAA
+
+
+
+
+
+
+
+                                    
+                                }
+                            }
+                        });
+                    }
+                });
+            }else{
+                console.error("L'utente attuale non ha nessuna libreria da mostrare");
+            }
+        }else{
+            console.error("Impossibile ottenere la libreria attuale");
+        }
+    });
 }
 
 function removeFromLibrary(id, library) {
