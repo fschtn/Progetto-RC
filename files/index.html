@@ -1,11 +1,3 @@
-<!--
-
-    Aggiungere tasto di login di Google con funzione che ottiene l'ID e l'access token dell'utente
-
-    Aggiungere chiamata a checkLogin() dopo l'accesso a ciascuna delle piattaforme, in modo da inserire il "check" verde o reindirizzare l'utente alla Home
-
--->
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -54,9 +46,8 @@
                 gapi.load('auth2', function() {
                     google_loaded = true;
                     console.log("API Google caricata");
-                    google_auth = gapi.auth2.init({
-                        client_id: '522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com'
-                    });
+                    google_auth = gapi.auth2.getAuthInstance();
+                    // google_auth.signIn({scope: "https://www.googleapis.com/auth/books"});
                 });
 
                 // INTERVALLO CHE CARICA LA PAGINA SOLO QUANDO SONO STATI CARICATI SIA GOOGLE CHE FACEBOOK

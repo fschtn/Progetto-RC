@@ -6,13 +6,8 @@ var google_loaded;
 
 function pageLoad() {
     checkLogin();
-    ottieniInfoUtente();
-
-
-
-    // Aggiungere funzione che mostra la pagina, in modo da nasconderla prima che tutte le info siano caricate
-
-
+    if(document.location.pathname != "/")
+        ottieniInfoUtente();
 }
 
 function checkLogin() {

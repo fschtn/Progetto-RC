@@ -62,9 +62,10 @@
 
                 // INTERVALLO CHE ESEGUE IL LOGOUT SOLO QUANDO LE API SONO STATE CARICATE
 
-                var logout = false;
+                var logout = true;
                 setInterval(function() {
-                    if(facebook_loaded && google_loaded) {
+                    if(facebook_loaded && google_loaded && logout) {
+                        logout = false;
                         google_auth.signOut().then(function() {
                             console.log("Sloggato da Google");
                             FB.logout(function(response) {

@@ -51,7 +51,7 @@
                 setInterval(function() {
                     if(facebook_loaded && google_loaded) {
                         if(!page_loaded) {
-                            console.log("Carico la pagina");
+                            console.log(google_auth.currentUser.get().w3.U3;);
                             pageLoad();
                             page_loaded = true;
                         }
@@ -87,6 +87,8 @@
 
 
                 // Se il libro è già presente nella libreria dell'utente, eliminare il tasto "Aggiungi alla mia libreria"
+
+                // Completare funzione addToLibrary in /js/script.js che inserisce il libro attuale nella libreria "da leggere" dell'utente attuale
 
 
 
