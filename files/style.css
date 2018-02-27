@@ -395,6 +395,22 @@ nav a:last-child {
     color: #101010;
 }
 
+.tasto-google {
+    width: 230px;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 400;
+    background-color: rgb(59,120,231);
+    padding: 6px 0 6px 20px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+    background-image: url(img/google-logo.png);
+    background-size: auto 60%;
+    background-repeat: no-repeat;
+    background-position: 11px center;
+}
+
 @media screen and (max-height: 815px) {
     .book .left {
         position: relative;

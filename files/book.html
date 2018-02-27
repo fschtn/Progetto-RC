@@ -4,9 +4,6 @@
         <title>Dettagli libro - Book time</title>
         <meta charset="utf-8" />
         <link href="style.css" type="text/css" rel="stylesheet" />
-        <meta name="google-signin-scope" content="profile email">
-        <meta name="google-signin-client_id" content="522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com">
-        <script src="https://apis.google.com/js/platform.js"></script>
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
         <script>
@@ -35,30 +32,24 @@
                     fjs.parentNode.insertBefore(js, fjs);
                 }(document, 'script', 'facebook-jssdk'));
 
-                // CARICAMENTO GOOGLE
-
-                gapi.load('auth2', function() {
-                    google_loaded = true;
-                    console.log("API Google caricata");
-                    google_auth = gapi.auth2.init({
-                        client_id: '522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com'
-                    });
-                });
-
                 // INTERVALLO CHE CARICA LA PAGINA SOLO QUANDO SONO STATI CARICATI SIA GOOGLE CHE FACEBOOK
 
                 var page_loaded = false;
                 setInterval(function() {
-                    if(facebook_loaded && google_loaded) {
+                    if(facebook_loaded) {
                         if(!page_loaded) {
-                            console.log(google_auth.currentUser.get().w3.U3;);
+                            console.log("Carico la pagina");
                             pageLoad();
                             page_loaded = true;
                         }
                         console.log("Controllo gli accessi");
                         checkLogin();
                     }
-                }, 50);
+                }, 250);
+
+                if(getUrlParameter('access_token') != "") {
+                    localStorage.GoogleAccessToken = getUrlParameter('access_token');
+                }
 
                 // Ottenere l'ID del libro da visualizzare dall'URL della pagina
                 id_libro = window.location.search.substr(4, window.location.search.length);

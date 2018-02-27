@@ -4,6 +4,120 @@
         <title>Book time</title>
         <meta charset="utf-8" />
         <link href="style.css" type="text/css" rel="stylesheet" />
+        <!-- <meta name="google-signin-scope" content="profile email">
+        <meta name="google-signin-client_id" content="522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com">
+        <script src="https://apis.google.com/js/platform.js"></script> -->
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/script.js"></script>
+        <style>
+            body {
+                background-color: #16a085;
+                padding: 0;
+            }
+        </style>
+        <script>
+            $(document).ready(function () {
+
+                // CARICAMENTO FACEBOOK
+
+                window.fbAsyncInit = function () {
+                    FB.init({
+                        appId: '194992524408368',
+                        status: true,
+                        cookie: true,
+                        xfbml: true,
+                        version    : 'v2.11'
+                    });
+                    FB.getLoginStatus(function(response) {
+                        facebook_loaded = true;
+                        console.log("API Facebook caricata");
+                    });
+                };
+                (function(d, s, id) {
+                    var js, fjs = d.getElementsByTagName(s)[0];
+                    if (d.getElementById(id)) return;
+                    js = d.createElement(s); js.id = id;
+                    js.src = 'https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v2.12';
+                    fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));
+
+                // INTERVALLO CHE CARICA LA PAGINA SOLO QUANDO SONO STATI CARICATI SIA GOOGLE CHE FACEBOOK
+
+                var page_loaded = false;
+                setInterval(function() {
+                    if(facebook_loaded) {
+                        if(!page_loaded) {
+                            console.log("Carico la pagina");
+                            pageLoad();
+                            page_loaded = true;
+                        }
+                        console.log("Controllo gli accessi");
+                        checkLogin();
+                    }
+                }, 250);
+
+                if(getUrlParameter('access_token') != "") {
+                    localStorage.GoogleAccessToken = getUrlParameter('access_token');
+                }
+
+            });
+
+            function oauthSignIn() {
+                var oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
+                var form = document.createElement('form');
+                form.setAttribute('method', 'GET');
+                form.setAttribute('action', oauth2Endpoint);
+                var params = {
+                    'client_id': '522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com',
+                    'redirect_uri': 'http://reti.francescoschettino.it',
+                    'response_type': 'token',
+                    'scope': 'https://www.googleapis.com/auth/books',
+                    'include_granted_scopes': 'true'
+                };
+                for (var p in params) {
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'hidden');
+                    input.setAttribute('name', p);
+                    input.setAttribute('value', params[p]);
+                    form.appendChild(input);
+                }
+                document.body.appendChild(form);
+                $(form).css("display", "none");
+                form.submit();
+            }
+        </script>
+    </head>
+    <body>
+        <div class="container" id="login">
+            <img src="img/logo.png" alt="Logo" /><br />
+            <h1>Book Time</h1>
+            <b>Book Time</b> è l'applicazione perfetta per tutti gli amanti della lettura. D'ora in avanti potrai tener traccia di tutti i libri che hai letto, creare una lista dei libri che hai intenzione di leggere prossimamente e smettere di dimenticare la pagina a cui sei arrivato, con la comoda funzione <u>segnalibro</u>! Inoltre, potrai tenere d'occhio i progressi di lettura dei tuoi amici di Facebook!<br />
+        </div>
+        <div class="container" id="login_buttons">
+            <div class="fb">
+                <span>
+                    <img src="img/facebook.svg" /><br />
+                    L'accesso con Facebook è necessario affinchè tu possa essere riconosciuto dal sistema, avere un'identità e cercare più facilmente i tuoi amici.<br />
+                    <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="true" scope="public_profile,email" onlogin="checkLogin()"></div>
+                </span>
+            </div>
+            <div class="google">
+                <span>
+                    <img src="img/google.svg" /><br />
+                    L'accesso con Google è richiesto per dare la possibilità al sito di visualizzare le tue librerie, gestirle e cercare nuovi libri da leggere.<br />
+                    <div onclick="oauthSignIn();" class="tasto-google">Accedi con Google</div>
+                </span>
+            </div>
+        </div>
+    </body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html>
+    <head>
+        <title>Book time</title>
+        <meta charset="utf-8" />
+        <link href="style.css" type="text/css" rel="stylesheet" />
         <meta name="google-signin-scope" content="profile email">
         <meta name="google-signin-client_id" content="522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com">
         <script src="https://apis.google.com/js/platform.js"></script>
@@ -91,4 +205,4 @@
             </div>
         </div>
     </body>
-</html>
+</html> -->

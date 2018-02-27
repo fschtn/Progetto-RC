@@ -4,9 +4,6 @@
         <title>Logout - Book time</title>
         <meta charset="utf-8" />
         <link href="style.css" type="text/css" rel="stylesheet" />
-        <meta name="google-signin-scope" content="profile email">
-        <meta name="google-signin-client_id" content="522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com">
-        <script src="https://apis.google.com/js/platform.js"></script>
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
         <style>
@@ -50,28 +47,17 @@
                     fjs.parentNode.insertBefore(js, fjs);
                 }(document, 'script', 'facebook-jssdk'));
 
-                // CARICAMENTO API GOOGLE
-
-                gapi.load('auth2', function() {
-                    google_loaded = true;
-                    console.log("API Google caricata");
-                    google_auth = gapi.auth2.init({
-                        client_id: '522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com'
-                    });
-                });
-
                 // INTERVALLO CHE ESEGUE IL LOGOUT SOLO QUANDO LE API SONO STATE CARICATE
 
                 var logout = true;
                 setInterval(function() {
-                    if(facebook_loaded && google_loaded && logout) {
+                    if(facebook_loaded && logout) {
                         logout = false;
-                        google_auth.signOut().then(function() {
-                            console.log("Sloggato da Google");
-                            FB.logout(function(response) {
-                                console.log("Sloggato da Facebook");
-                                window.location.href = "/";
-                            });
+                        console.log("Esco da Facebook..");
+                        FB.logout(function(response) {
+                            console.log("Esco da Google..");
+                            localStorage.removeItem("GoogleAccessToken");
+                            window.location.href = '/';
                         });
                     }
                 }, 50);
