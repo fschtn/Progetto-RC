@@ -98,7 +98,20 @@
                             // e rimuovo il testo di ricerca,
                             // altrimenti blocco la ricerca di altri risultati
                             if(libri.totalItems > 0) {
+
+
+
+
+
+                                // Questa funzione carica direttamente i libri nella pagina
                                 libri.items.forEach(crea_libro);
+                                // Questa funzione inserisce i libri nella coda, da cui potranno essere scaricati
+                                // libri.items.forEach(add_to_queue);
+
+
+
+
+
                                 start += 8;
                                 $('.libri > h3').remove();
                             }else{
@@ -132,6 +145,34 @@
                 libro.addClass("cover");
                 libro.css("background-image", "url("+item.volumeInfo.imageLinks.thumbnail+")");
                 $('.libri').append(libro);
+            }
+
+            function add_to_queue(item) {
+
+
+
+
+
+                // Registrare tutto l'item (come stringa o oggetto JSON) nella coda
+
+
+
+
+
+            }
+
+            function show_book(num) {
+
+
+
+
+
+                // Ottiene "num" libri dalla coda dei libri cercati e richiama la funzione "crea_libro(item)" per ciascun elemento in coda
+
+
+
+
+
             }
         </script>
     </head>

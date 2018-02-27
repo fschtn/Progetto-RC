@@ -83,18 +83,14 @@ function addToLibrary(id, library) {
 //     Aggiunge il libro avente <id> all'interno della libreria <library>
 }
 
-function getBookInfo(id) {
+function removeFromLibrary(id, library) {
 //         id = id del libro
-//     Restituisce le informazioni del libro che ha <id>
+//         library = [past,present,future]
+//     Aggiunge il libro avente <id> all'interno della libreria <library>
 }
 
 function getList(type, limit) {
 //         type = [past,present,future]
 //         limit = (1,100)
 //     Ottiene i primi <limit> libri della lista <type>
-}
-
-function searchBook(title) {
-//         title = stringa, titolo del libro da cercare
-//     Cerca, tramite le API di Google, il libro con titolo uguale a <title>
 }
