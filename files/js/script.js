@@ -95,18 +95,6 @@ function crea_libro(item) {
     $('.libri').append(libro);
 }
 
-
-
-
-
-//
-//
-//
-// DA FARE
-//
-//
-//
-
 function carica_libreria(nome) {
     $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves?key="+google_api_key+"&access_token="+google_access_token, function(res) {
         if(res.hasOwnProperty('items')) {
@@ -148,22 +136,24 @@ function addToLibrary(id) {
                             contentType:"application/json",
                             success: function(res){
                                 if(res == undefined) {
-
-
-
-
-
-
-
-                                    // MOSTRA UN MESSAGGIO DI FELICITAAA
-
-
-
-
-
-
-
-                                    
+                                    $('#add_to_library').addClass("disabled");
+                                    $('#add_to_library').removeAttr("onclick");
+                                    $('#add_to_library').text("✔ Aggiunto");
+                                    setTimeout(function() {
+                                        iniziato = $("<span></span>");
+                                        rimuovi = $("<span></span>");
+                                        iniziato.addClass("button");
+                                        iniziato.addClass("green");
+                                        iniziato.text('Segna come iniziato');
+                                        iniziato.attr("onclick","bookCompleted('"+id+"')");
+                                        rimuovi.addClass("button");
+                                        rimuovi.addClass("red");
+                                        rimuovi.attr("onclick", "removeFromLibrary('"+id+"')");
+                                        rimuovi.text("Rimuovi dalla libreria");
+                                        $('.pages').append(iniziato);
+                                        $('.pages').append(rimuovi);
+                                        $('.pages #add_to_library').remove();
+                                    }, 2000);
                                 }
                             }
                         });
@@ -178,10 +168,72 @@ function addToLibrary(id) {
     });
 }
 
-function removeFromLibrary(id, library) {
-//         id = id del libro
-//         library = [past,present,future]
-//     Aggiunge il libro avente <id> all'interno della libreria <library>
+function removeFromLibrary(id) {
+    $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves?key="+google_api_key+"&access_token="+google_access_token, function(res) {
+        if(res.hasOwnProperty('items')) {
+            if(res.items.length > 0) {
+                res.items.forEach(function(item) {
+                    if(item.title == "To read" || item.title == "Reading now") {
+                        $.ajax({
+                            url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/'+item.id+'/removeVolume?volumeId='+id+'&key='+google_api_key+'&access_token='+google_access_token,
+                            type:"POST",
+                            contentType:"application/json",
+                            success: function(res){
+                                $('.pages > span').remove();
+                                aggiungi = $("<span></span>");
+                                aggiungi.addClass("button");
+                                aggiungi.addClass("green");
+                                aggiungi.attr("id","add_to_library");
+                                aggiungi.attr("onclick", "addToLibrary('"+id+"')");
+                                aggiungi.text('Segna come "Da leggere"');
+                                $('.pages').append(aggiungi);
+                                $('#add_to_library').css("display","inline-block");
+                            }
+                        });
+                    }
+                });
+            }else{
+                console.error("L'utente attuale non ha nessuna libreria da mostrare");
+            }
+        }else{
+            console.error("Impossibile ottenere la libreria attuale");
+        }
+    });
+}
+
+function bookCompleted(id) {
+    $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves?key="+google_api_key+"&access_token="+google_access_token, function(librerie) {
+        if(librerie.hasOwnProperty('items')) {
+            if(librerie.items.length > 0) {
+                librerie.items.forEach(function(libreria) {
+                    if(libreria.title == "To read") {
+                        $.ajax({
+                            url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/'+libreria.id+'/removeVolume?volumeId='+id+'&key='+google_api_key+'&access_token='+google_access_token,
+                            type:"POST",
+                            contentType:"application/json",
+                            success: function(res){
+                                $('.pages > span').remove();
+                            }
+                        });
+                    }
+                    if(libreria.title == "Reading now") {
+                        $.ajax({
+                            url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/'+libreria.id+'/addVolume?volumeId='+id+'&key='+google_api_key+'&access_token='+google_access_token,
+                            type:"POST",
+                            contentType:"application/json",
+                            success: function(res){
+                                $('.pages > span').remove();
+                            }
+                        });
+                    }
+                });
+            }else{
+                console.error("L'utente attuale non ha nessuna libreria da mostrare");
+            }
+        }else{
+            console.error("Impossibile ottenere la libreria attuale");
+        }
+    });
 }
 
 function getList(type, limit) {

@@ -368,14 +368,9 @@ nav a:last-child {
 }
 
 .book .pages span {
-    text-transform: uppercase;
-    font-weight: 800;
-    font-size: 15px;
-    letter-spacing: 1px;
     display: inline-block;
     margin-bottom: 6px;
-    width: 100%;
-    color: #ccc;
+    cursor: pointer;
 }
 
 .libro > .info input {
@@ -393,6 +388,10 @@ nav a:last-child {
     border: 0;
     background: none;
     color: #101010;
+}
+
+#add_to_library {
+    display: none;
 }
 
 .tasto-google {

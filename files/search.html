@@ -62,15 +62,18 @@
                 // Definisco le variabili per le ricerche e
                 // creo un intervallo di 500ms durante il quale eseguo le ricerche
                 var start = 0;
-                var dettagli_ricerca = "&printType=books&orderBy=relevance&filter=paid-ebooks&maxResults=8&key="+google_api_key;
+                var max_result = 8;
+                var dettagli_ricerca = "&printType=books&orderBy=relevance&filter=paid-ebooks&maxResults=";
                 var continua_ricerca = true;
+                var max_libri_da_mostrare = 100;
                 var ricerca_libri = setInterval(function() {
                     // Se la ricerca deve continuare,
                     // cerco nuovi risultati,
                     // altrimenti blocco l'esecuzione del setInterval()
-                    if(continua_ricerca) {
+                    if(continua_ricerca && $('.libri > div').length < max_libri_da_mostrare) {
                         // Cerco altri risultati su Google Books
-                        $.get("https://www.googleapis.com/books/v1/volumes?q="+libro_da_cercare+dettagli_ricerca+"&startIndex="+start, function(libri) {
+                        $.get("https://www.googleapis.com/books/v1/volumes?q="+libro_da_cercare+dettagli_ricerca+max_result+"&key="+google_api_key+"&startIndex="+start, function(libri) {
+                            console.log(libri);
                             // Se la ricerca restituisce risultati,
                             // richiamo la funzione crea_libro() per ciascun risultato,
                             // aumento l'inizio della ricerca di 8
@@ -92,6 +95,7 @@
 
 
                                 start += 8;
+                                max_result = 40;
                                 $('.libri > h3').remove();
                             }else{
                                 continua_ricerca = false;
@@ -102,7 +106,7 @@
                     }else{
                         clearInterval(ricerca_libri);
                     }
-                }, 500);
+                }, 1000);
             });
 
             // Definisco la funzione di creazione di un nuovo libro
@@ -112,18 +116,27 @@
                 link = $("<a></a>");
                 titolo = $("<h1></h1>");
                 autore = $("<h2></h2>");
-                titolo_text = item.volumeInfo.title.length > 30 ? item.volumeInfo.title.substr(0,27)+"..." : item.volumeInfo.title;
-                titolo.append(titolo_text);
-                if(item.volumeInfo.hasOwnProperty('authors'))
-                    autore.append(item.volumeInfo.authors[0]);
-                link.append(titolo);
-                link.append(autore);
-                link.addClass("info");
-                link.attr("href","book.html?id="+item.id);
-                libro.append(link);
-                libro.addClass("cover");
-                libro.css("background-image", "url("+item.volumeInfo.imageLinks.thumbnail+")");
-                $('.libri').append(libro);
+                if(item.hasOwnProperty('id')) {
+                    link.attr("href","book.html?id="+item.id);
+                    if(item.hasOwnProperty('volumeInfo')) {
+                        if(item.volumeInfo.hasOwnProperty('authors'))
+                            autore.append(item.volumeInfo.authors[0]);
+                        if(item.volumeInfo.hasOwnProperty('title')) {
+                            titolo_text = item.volumeInfo.title.length > 30 ? item.volumeInfo.title.substr(0,27)+"..." : item.volumeInfo.title;
+                            if(item.volumeInfo.hasOwnProperty('imageLinks')) {
+                                var url_img = item.volumeInfo.imageLinks.hasOwnProperty('thumbnail') ? item.volumeInfo.imageLinks.thumbnail : item.volumeInfo.imageLinks.hasOwnProperty('smallThumbnail') ? item.volumeInfo.imageLinks.smallThumbnail : "";
+                                libro.css("background-image", "url("+url_img+")");
+                            }
+                            titolo.append(titolo_text);
+                            link.append(titolo);
+                            link.append(autore);
+                            link.addClass("info");
+                            libro.append(link);
+                            libro.addClass("cover");
+                            $('.libri').append(libro);
+                        }
+                    }
+                }
             }
 
             function add_to_queue(item) {
@@ -133,6 +146,21 @@
 
 
                 // Registrare tutto l'item (come stringa o oggetto JSON) nella coda
+                // var amqp = require('amqplib/callback_api');
+                // var amqpURL = 'amqp://sbriboei:zol1lJ0p-TPDKu4Klz-ZL5SBymjZ8Fnf@duckbill.rmq.cloudamqp.com/sbriboei';
+                //
+                // amqp.connect(amqpURL, function(err, conn) {
+                //   conn.createChannel(function(err, ch) {
+                //     var q = 'test';
+                //     var msg = 'Hello World!';
+                //
+                //     ch.assertQueue(q, {durable: false});
+                //     // Note: on Node 6 Buffer.from(msg) should be used
+                //     ch.sendToQueue(q, new Buffer(msg));
+                //     console.log(" [x] Sent %s", msg);
+                //   });
+                //   setTimeout(function() { conn.close(); process.exit(0) }, 500);
+                // });
 
 
 
@@ -147,6 +175,21 @@
 
 
                 // Ottiene "num" libri dalla coda dei libri cercati e richiama la funzione "crea_libro(item)" per ciascun elemento in coda
+                // var amqp = require('amqplib/callback_api');
+                // var amqpURL = 'amqp://sbriboei:zol1lJ0p-TPDKu4Klz-ZL5SBymjZ8Fnf@duckbill.rmq.cloudamqp.com/sbriboei';
+                //
+                //
+                // amqp.connect(amqpURL, function(err, conn) {
+                //   conn.createChannel(function(err, ch) {
+                //     var q = 'test';
+                //
+                //     ch.assertQueue(q, {durable: false});
+                //     console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q);
+                //     ch.consume(q, function(msg) {
+                //       console.log(" [x] Received %s", msg.content.toString());
+                //     }, {noAck: true});
+                //   });
+                // });
 
 
 
@@ -166,7 +209,7 @@
         </header>
         <div class="container">
             <nav>
-                <a href="profile.html" class="current"><img src="img/user.svg" /><span></span></a>
+                <a href="profile.html"><img src="img/user.svg" /><span></span></a>
                 <a href="reading.html">In lettura</a>
                 <a href="to-read.html">Da leggere</a>
                 <a href="read.html">Letti</a>

@@ -67,7 +67,7 @@
                     trama = response.volumeInfo.description;
                     copertina = response.volumeInfo.imageLinks.medium;
                     $('.copertina').css("background-image", "url("+copertina+")");
-                    $('#add_to_library').attr("href","javascript:addToLibrary('"+id_libro+"');");
+                    $('#add_to_library').attr("onclick","addToLibrary('"+id_libro+"');");
                     $('.info > h1').text(titolo);
                     $('.info > h2').text(autore);
                     $('.info > .pagine').text(pagine);
@@ -75,16 +75,49 @@
                     $('.info > span').last().html(trama);
                 });
 
-
-
-
-
                 // Se il libro è già presente nella libreria dell'utente, eliminare il tasto "Aggiungi alla mia libreria"
-
-
-
-
-
+                var continua_ricerca = true;
+                $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves?key="+google_api_key+"&access_token="+google_access_token, function(librerie) {
+                    if(librerie.hasOwnProperty('items')) {
+                        if(librerie.items.length > 0) {
+                            librerie.items.forEach(function(libreria) {
+                                if(continua_ricerca) {
+                                    $.get('https://www.googleapis.com/books/v1/mylibrary/bookshelves/'+libreria.id+'/volumes?key='+google_api_key+'&access_token='+google_access_token, function(libri) {
+                                        if(libri.hasOwnProperty('items')) {
+                                            if(libri.items.length > 0) {
+                                                libri.items.forEach(function(libro) {
+                                                    if(libro.id == id_libro) {
+                                                        if(libreria.title == "To read") {
+                                                            iniziato = $("<span></span>");
+                                                            rimuovi = $("<span></span>");
+                                                            iniziato.addClass("button");
+                                                            iniziato.addClass("green");
+                                                            iniziato.attr("onclick","bookCompleted('"+libro.id+"')");
+                                                            iniziato.text('Segna come iniziato');
+                                                            rimuovi.addClass("button");
+                                                            rimuovi.addClass("red");
+                                                            rimuovi.attr("onclick", "removeFromLibrary('"+libro.id+"')");
+                                                            rimuovi.text("Rimuovi dalla libreria");
+                                                            $('.pages').append(iniziato);
+                                                            $('.pages').append(rimuovi);
+                                                        }
+                                                        $('#add_to_library').remove();
+                                                        continua_ricerca = false;
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        }else{
+                            console.error("L'utente attuale non ha nessuna libreria da mostrare");
+                        }
+                    }else{
+                        console.error("Impossibile ottenere la libreria attuale");
+                    }
+                    $('#add_to_library').css("display","inline-block");
+                });
 
             });
         </script>
@@ -100,7 +133,7 @@
         </header>
         <div class="container">
             <nav>
-                <a href="profile.html" class="current"><img src="img/user.svg" /><span></span></a>
+                <a href="profile.html"><img src="img/user.svg" /><span></span></a>
                 <a href="reading.html">In lettura</a>
                 <a href="to-read.html">Da leggere</a>
                 <a href="read.html">Letti</a>
@@ -110,7 +143,7 @@
                 <div class="left">
                     <div class="copertina"></div>
                     <div class="pages">
-                        <a href="javascript:alert('Attendi qualche secondo prima di aggiungere i libri in libreria!');" id="add_to_library" class="button green">Aggiungi alla mia libreria</a>
+                        <span onclick="alert('Attendi qualche secondo prima di aggiungere i libri in libreria!');" id="add_to_library" class="button green">Segna come "Da leggere"</a>
                     </div>
                 </div>
                 <div class="info">
