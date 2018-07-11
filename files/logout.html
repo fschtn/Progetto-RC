@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Logout - Book time</title>
-        <meta charset="utf-8" />
+        <meta charset="utf-8" /><link rel="icon" href="/img/favicon.ico" />
         <link href="style.css" type="text/css" rel="stylesheet" />
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
@@ -36,7 +36,7 @@
                     });
                     FB.getLoginStatus(function(response) {
                         facebook_loaded = true;
-                        console.log("API Facebook caricata");
+                        // console.log("API Facebook caricata");
                     });
                 };
                 (function(d, s, id) {
@@ -53,10 +53,10 @@
                 setInterval(function() {
                     if(facebook_loaded && logout) {
                         logout = false;
-                        console.log("Esco da Facebook..");
+                        // console.log("Esco da Facebook..");
                         FB.logout(function(response) {
                             console.log("Esco da Google..");
-                            localStorage.removeItem("GoogleAccessToken");
+                            localStorage.removeItem("UserInfo");
                             window.location.href = '/';
                         });
                     }

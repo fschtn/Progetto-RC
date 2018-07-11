@@ -3,6 +3,7 @@
     <head>
         <title>Dettagli libro - Book time</title>
         <meta charset="utf-8" />
+        <link rel="icon" href="/img/favicon.ico" />
         <link href="style.css" type="text/css" rel="stylesheet" />
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
@@ -21,7 +22,7 @@
                     });
                     FB.getLoginStatus(function(response) {
                         facebook_loaded = true;
-                        console.log("API Facebook caricata");
+                        // console.log("API Facebook caricata");
                     });
                 };
                 (function(d, s, id) {
@@ -38,7 +39,7 @@
                 setInterval(function() {
                     if(facebook_loaded) {
                         if(!page_loaded) {
-                            console.log("Carico la pagina");
+                            // console.log("Carico la pagina");
                             pageLoad();
                             page_loaded = true;
                         }
@@ -75,39 +76,95 @@
                     $('.info > span').last().html(trama);
                 });
 
-                // Se il libro è già presente nella libreria dell'utente, eliminare il tasto "Aggiungi alla mia libreria"
-                var continua_ricerca = true;
-                $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves?key="+google_api_key+"&access_token="+google_access_token, function(librerie) {
+                $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves?key="+google_api_key+"&access_token="+get_user_info("google_token"), function(librerie) {
                     if(librerie.hasOwnProperty('items')) {
                         if(librerie.items.length > 0) {
-                            librerie.items.forEach(function(libreria) {
-                                if(continua_ricerca) {
-                                    $.get('https://www.googleapis.com/books/v1/mylibrary/bookshelves/'+libreria.id+'/volumes?key='+google_api_key+'&access_token='+google_access_token, function(libri) {
-                                        if(libri.hasOwnProperty('items')) {
-                                            if(libri.items.length > 0) {
-                                                libri.items.forEach(function(libro) {
-                                                    if(libro.id == id_libro) {
-                                                        if(libreria.title == "To read") {
-                                                            iniziato = $("<span></span>");
-                                                            rimuovi = $("<span></span>");
-                                                            iniziato.addClass("button");
-                                                            iniziato.addClass("green");
-                                                            iniziato.attr("onclick","bookCompleted('"+libro.id+"')");
-                                                            iniziato.text('Segna come iniziato');
-                                                            rimuovi.addClass("button");
-                                                            rimuovi.addClass("red");
-                                                            rimuovi.attr("onclick", "removeFromLibrary('"+libro.id+"')");
-                                                            rimuovi.text("Rimuovi dalla libreria");
-                                                            $('.pages').append(iniziato);
-                                                            $('.pages').append(rimuovi);
-                                                        }
-                                                        $('#add_to_library').remove();
-                                                        continua_ricerca = false;
-                                                    }
-                                                });
+                            // LIBRI DA LEGGERE
+                            $.get('https://www.googleapis.com/books/v1/mylibrary/bookshelves/2/volumes?key='+google_api_key+'&access_token='+get_user_info("google_token"), function(libri) {
+                                if(libri.hasOwnProperty('items')) {
+                                    if(libri.items.length > 0) {
+                                        libri.items.forEach(function(libro) {
+                                            if(libro.id == id_libro) {
+                                                iniziato = $("<span></span>");
+                                                rimuovi = $("<span></span>");
+                                                iniziato.addClass("button");
+                                                iniziato.addClass("green");
+                                                iniziato.attr("onclick","bookStarted('"+libro.id+"')");
+                                                iniziato.text('Segna come iniziato');
+                                                rimuovi.addClass("button");
+                                                rimuovi.addClass("red");
+                                                rimuovi.attr("onclick", "removeFromLibrary('"+libro.id+"')");
+                                                rimuovi.text("Rimuovi dalla libreria");
+                                                $('.pages').append(iniziato);
+                                                $('.pages').append(rimuovi);
+                                                $('#add_to_library').remove();
+                                            }else{
+                                                $('#add_to_library').css("opacity","1");
                                             }
-                                        }
-                                    });
+                                        });
+                                    }
+                                }
+                            });
+                            // LIBRI LETTI
+                            $.get('https://www.googleapis.com/books/v1/mylibrary/bookshelves/4/volumes?key='+google_api_key+'&access_token='+get_user_info("google_token"), function(libri) {
+                                if(libri.hasOwnProperty('items')) {
+                                    if(libri.items.length > 0) {
+                                        libri.items.forEach(function(libro) {
+                                            if(libro.id == id_libro) {
+                                                rimuovi = $("<span></span>");
+                                                rimuovi.addClass("button");
+                                                rimuovi.addClass("red");
+                                                rimuovi.attr("onclick", "removeFromLibrary('"+libro.id+"')");
+                                                rimuovi.text("Rimuovi dalla libreria");
+                                                $('.pages').append(rimuovi);
+                                                $('#add_to_library').remove();
+                                            }else{
+                                                $('#add_to_library').css("opacity","1");
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                            // LIBRI IN LETTURA
+                            $.get('https://www.googleapis.com/books/v1/mylibrary/bookshelves/3/volumes?key='+google_api_key+'&access_token='+get_user_info("google_token"), function(libri) {
+                                if(libri.hasOwnProperty('items')) {
+                                    if(libri.items.length > 0) {
+                                        libri.items.forEach(function(libro) {
+                                            if(libro.id == id_libro) {
+                                                pagina_massima = libro.volumeInfo.pageCount;
+                                                pagina_attuale = get_current_page(get_user_info('facebook_id'),libro.id);
+                                                pages = $("<span></span>");
+                                                input = $("<input />");
+                                                completato = $("<a></a>");
+                                                rimuovi = $("<a></a>");
+                                                input.attr("type","number");
+                                                input.attr("min","0");
+                                                input.attr("max",pagina_massima);
+                                                input.attr("value",pagina_attuale);
+                                                input.attr("onchange","page_update('"+libro.id+"')");
+                                                pages.append(input);
+                                                pages.append("/ "+pagina_massima);
+                                                $('.pages').append(pages);
+                                                $('.pages').append("<br />");
+                                                completato.attr("href","javascript:bookCompleted('"+libro.id+"')");
+                                                completato.addClass("green");
+                                                completato.addClass("button");
+                                                completato.append("Segna come completato");
+                                                $('.pages').append(completato);
+                                                $('.pages').append("<br />");
+                                                rimuovi.attr("href","javascript:removeFromLibrary('"+libro.id+"')");
+                                                rimuovi.addClass("red");
+                                                rimuovi.addClass("button");
+                                                rimuovi.append("Rimuovi dalla libreria");
+                                                $('.pages').attr("id",libro.id);
+                                                $('.pages').append(rimuovi);
+                                                $('.pages').append(rimuovi);
+                                                $('#add_to_library').remove();
+                                            }else{
+                                                $('#add_to_library').css("opacity","1");
+                                            }
+                                        });
+                                    }
                                 }
                             });
                         }else{
@@ -116,7 +173,6 @@
                     }else{
                         console.error("Impossibile ottenere la libreria attuale");
                     }
-                    $('#add_to_library').css("display","inline-block");
                 });
 
             });
@@ -137,13 +193,14 @@
                 <a href="reading.html">In lettura</a>
                 <a href="to-read.html">Da leggere</a>
                 <a href="read.html">Letti</a>
+                <a href="friends.html">Amici</a>
                 <a href="logout.html">Logout</a>
             </nav>
             <div class="book">
                 <div class="left">
                     <div class="copertina"></div>
                     <div class="pages">
-                        <span onclick="alert('Attendi qualche secondo prima di aggiungere i libri in libreria!');" id="add_to_library" class="button green">Segna come "Da leggere"</a>
+                        <span onclick="alert('Attendi qualche secondo prima di aggiungere i libri in libreria!');" id="add_to_library" style="opacity: 0;" class="button green">Segna come "Da leggere"</a>
                     </div>
                 </div>
                 <div class="info">

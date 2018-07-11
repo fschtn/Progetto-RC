@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Amici - Book time</title>
+        <meta charset="utf-8" /><link rel="icon" href="/img/favicon.ico" />
+        <link href="style.css" type="text/css" rel="stylesheet" />
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/script.js"></script>
+        <script>
+            $(document).ready(function () {
+                var facebook_loaded;
+                // CARICAMENTO FACEBOOK
+                window.fbAsyncInit = function () {
+                    FB.init({
+                        appId: '194992524408368',
+                        status: true,
+                        cookie: true,
+                        xfbml: true,
+                        version    : 'v2.11'
+                    });
+                    FB.getLoginStatus(function(response) {
+                        facebook_loaded = true;
+                        // console.log("API Facebook caricata");
+                    });
+                    FB.api(
+                        '/'+get_user_info('facebook_id')+'/friends?access_token='+get_user_info('facebook_token'),
+                        'GET',
+                        {},
+                        function(response) {
+                            mostra_amici(response);
+                    });
+                };
+                (function(d, s, id) {
+                    var js, fjs = d.getElementsByTagName(s)[0];
+                    if (d.getElementById(id)) return;
+                    js = d.createElement(s); js.id = id;
+                    js.src = 'https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v2.12';
+                    fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));
+
+                // INTERVALLO CHE CARICA LA PAGINA SOLO QUANDO SONO STATI CARICATI SIA GOOGLE CHE FACEBOOK
+
+                var page_loaded = false;
+                setInterval(function() {
+                    if(facebook_loaded) {
+                        if(!page_loaded) {
+                            // console.log("Carico la pagina");
+                            pageLoad();
+                            page_loaded = true;
+                        }
+                        console.log("Controllo gli accessi");
+                        checkLogin();
+                    }
+                }, 250);
+            });
+
+            function mostra_amici(amici) {
+
+                get_queue();
+
+                if("error" in amici) {
+                    avviso = $("<h2></h2>");
+                    errore = $("<i></i>");
+                    console.log(amici);
+                    if("message" in amici.error) {
+                        errore.html(amici.error.message);
+                        avviso.html("C'è stato un errore durante il caricamento");
+                    }else{
+                        errore.html(amici.error.message);
+                        avviso.html("C'è stato un errore durante il caricamento:<br />");
+                        avviso.append(errore);
+                    }
+                    $('#friends').html(avviso);
+                    return;
+                }
+
+                amici.data.forEach(function(info_amico) {
+                    aggiornamento = $('<div></div>');
+                    cover = $('<div></div>');
+                    img = $('<img />');
+                    info = $('<div></div>');
+                    h1 = $('<h1></h1>');
+                    nome = $('<i></i>');
+                    num_pagina = $('<b></b>');
+                    aggiornamento.addClass("aggiornamento");
+                    aggiornamento.attr("id", info_amico.id);
+                    aggiornamento.attr("done", "no");
+                    cover.addClass("cover");
+                    // cover.css("background-image", "url(https://about.canva.com/wp-content/uploads/sites/3/2015/01/children_bookcover.png)");
+                    info.addClass("info");
+                    // h1.text("Titolo libro");
+                    nome.text(info_amico.name);
+                    cover.append(img);
+                    info.append(h1);
+                    info.append(nome);
+                    info.append(" ha raggiunto pagina ");
+                    info.append(num_pagina);
+                    info.append(" del libro");
+                    aggiornamento.append(cover);
+                    aggiornamento.append(info);
+                    $('#friends').append(aggiornamento);
+                });
+
+                amici.data.forEach(function(info_amico) {
+                    $.get("https://graph.facebook.com/"+info_amico.id+"?fields=picture&access_token="+get_user_info("facebook_token"), function(response) {
+                        $('#'+info_amico.id+" img").attr("src", response.picture.data.url);
+                    });
+                });
+
+                coda_libri = JSON.parse(localStorage.coda_libri);
+                for(i = coda_libri.length-1; i>=0; i--) {
+                    elem = JSON.parse(coda_libri[i]);
+                    if($('#'+elem.id_facebook).attr("done") == "no") {
+                        $('#'+elem.id_facebook).attr("done","yes");
+                        $('#'+elem.id_facebook+" .info b").html(elem.pagina_nuova);
+                        mostra_libro(elem.id_libro, elem.id_facebook);
+                    }
+                }
+            }
+            function mostra_libro(id_libro, id_facebook) {
+                $.get("https://www.googleapis.com/books/v1/volumes/"+id_libro+"?key="+google_api_key, function(res) {
+                    titolo_libro = res.volumeInfo.title.length > 22 ? res.volumeInfo.title.substr(0,19)+"..." : res.volumeInfo.title;
+                    $('#'+id_facebook+" .info h1").html(titolo_libro);
+                    $('#'+id_facebook+" .cover").css("background-image", "url("+res.volumeInfo.imageLinks.thumbnail+")");
+                    console.log(res.volumeInfo);
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <header>
+            <div class="container">
+                <form action="search.html" method="get">
+                    <input type="text" name="q" placeholder="Cerca.." autocomplete="off"/>
+                    <input type="submit" value="Cerca" hidden />
+                </form>
+            </div>
+        </header>
+        <div class="container">
+            <nav>
+                <a href="profile.html"><img src="img/user.svg" /><span></span></a>
+                <a href="reading.html">In lettura</a>
+                <a href="to-read.html">Da leggere</a>
+                <a href="read.html">Letti</a>
+                <a href="friends.html" class="current">Amici</a>
+                <a href="logout.html">Logout</a>
+            </nav>
+            <div class="amici" id="friends"></div>
+        </div>
+    </body>
+</html>

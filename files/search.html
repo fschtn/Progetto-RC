@@ -2,10 +2,11 @@
 <html>
     <head>
         <title>Libri da leggere - Book time</title>
-        <meta charset="utf-8" />
+        <meta charset="utf-8" /><link rel="icon" href="/img/favicon.ico" />
         <link href="style.css" type="text/css" rel="stylesheet" />
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
+        <script type="text/javascript" src="js/require.js"></script>
         <script>
             $(document).ready(function () {
 
@@ -21,7 +22,7 @@
                     });
                     FB.getLoginStatus(function(response) {
                         facebook_loaded = true;
-                        console.log("API Facebook caricata");
+                        // console.log("API Facebook caricata");
                     });
                 };
                 (function(d, s, id) {
@@ -38,7 +39,7 @@
                 setInterval(function() {
                     if(facebook_loaded) {
                         if(!page_loaded) {
-                            console.log("Carico la pagina");
+                            // console.log("Carico la pagina");
                             pageLoad();
                             page_loaded = true;
                         }
@@ -73,28 +74,32 @@
                     if(continua_ricerca && $('.libri > div').length < max_libri_da_mostrare) {
                         // Cerco altri risultati su Google Books
                         $.get("https://www.googleapis.com/books/v1/volumes?q="+libro_da_cercare+dettagli_ricerca+max_result+"&key="+google_api_key+"&startIndex="+start, function(libri) {
-                            console.log(libri);
                             // Se la ricerca restituisce risultati,
-                            // richiamo la funzione crea_libro() per ciascun risultato,
+                            // mostro un libro per ciascun risultato,
                             // aumento l'inizio della ricerca di 8
                             // e rimuovo il testo di ricerca,
                             // altrimenti blocco la ricerca di altri risultati
                             if(libri.totalItems > 0) {
-
-
-
-
-
                                 // Questa funzione carica direttamente i libri nella pagina
-                                libri.items.forEach(crea_libro);
-                                // Questa funzione inserisce i libri nella coda, da cui potranno essere scaricati
-                                // libri.items.forEach(add_to_queue);
-
-
-
-
-
-                                start += 8;
+                                libri.items.forEach(function(item) {
+                                    libro = $("<div></div>");
+                                    link = $("<a></a>");
+                                    titolo = $("<h1></h1>");
+                                    autore = $("<h2></h2>");
+                                    titolo_text = item.volumeInfo.title.length > 30 ? item.volumeInfo.title.substr(0,27)+"..." : item.volumeInfo.title;
+                                    titolo.append(titolo_text);
+                                    if(item.volumeInfo.hasOwnProperty('authors'))
+                                        autore.append(item.volumeInfo.authors[0]);
+                                    link.append(titolo);
+                                    link.append(autore);
+                                    link.addClass("info");
+                                    link.attr("href","book.html?id="+item.id);
+                                    libro.append(link);
+                                    libro.addClass("cover");
+                                    libro.css("background-image", "url("+item.volumeInfo.imageLinks.thumbnail+")");
+                                    $('.libri').append(libro);
+                                });
+                                start += max_result;
                                 max_result = 40;
                                 $('.libri > h3').remove();
                             }else{
@@ -108,94 +113,6 @@
                     }
                 }, 1000);
             });
-
-            // Definisco la funzione di creazione di un nuovo libro
-            // che verrà richiamata per ciascun risultato trovato dalla ricerca
-            function crea_libro(item) {
-                libro = $("<div></div>");
-                link = $("<a></a>");
-                titolo = $("<h1></h1>");
-                autore = $("<h2></h2>");
-                if(item.hasOwnProperty('id')) {
-                    link.attr("href","book.html?id="+item.id);
-                    if(item.hasOwnProperty('volumeInfo')) {
-                        if(item.volumeInfo.hasOwnProperty('authors'))
-                            autore.append(item.volumeInfo.authors[0]);
-                        if(item.volumeInfo.hasOwnProperty('title')) {
-                            titolo_text = item.volumeInfo.title.length > 30 ? item.volumeInfo.title.substr(0,27)+"..." : item.volumeInfo.title;
-                            if(item.volumeInfo.hasOwnProperty('imageLinks')) {
-                                var url_img = item.volumeInfo.imageLinks.hasOwnProperty('thumbnail') ? item.volumeInfo.imageLinks.thumbnail : item.volumeInfo.imageLinks.hasOwnProperty('smallThumbnail') ? item.volumeInfo.imageLinks.smallThumbnail : "";
-                                libro.css("background-image", "url("+url_img+")");
-                            }
-                            titolo.append(titolo_text);
-                            link.append(titolo);
-                            link.append(autore);
-                            link.addClass("info");
-                            libro.append(link);
-                            libro.addClass("cover");
-                            $('.libri').append(libro);
-                        }
-                    }
-                }
-            }
-
-            function add_to_queue(item) {
-
-
-
-
-
-                // Registrare tutto l'item (come stringa o oggetto JSON) nella coda
-                // var amqp = require('amqplib/callback_api');
-                // var amqpURL = 'amqp://sbriboei:zol1lJ0p-TPDKu4Klz-ZL5SBymjZ8Fnf@duckbill.rmq.cloudamqp.com/sbriboei';
-                //
-                // amqp.connect(amqpURL, function(err, conn) {
-                //   conn.createChannel(function(err, ch) {
-                //     var q = 'test';
-                //     var msg = 'Hello World!';
-                //
-                //     ch.assertQueue(q, {durable: false});
-                //     // Note: on Node 6 Buffer.from(msg) should be used
-                //     ch.sendToQueue(q, new Buffer(msg));
-                //     console.log(" [x] Sent %s", msg);
-                //   });
-                //   setTimeout(function() { conn.close(); process.exit(0) }, 500);
-                // });
-
-
-
-
-
-            }
-
-            function show_book(num) {
-
-
-
-
-
-                // Ottiene "num" libri dalla coda dei libri cercati e richiama la funzione "crea_libro(item)" per ciascun elemento in coda
-                // var amqp = require('amqplib/callback_api');
-                // var amqpURL = 'amqp://sbriboei:zol1lJ0p-TPDKu4Klz-ZL5SBymjZ8Fnf@duckbill.rmq.cloudamqp.com/sbriboei';
-                //
-                //
-                // amqp.connect(amqpURL, function(err, conn) {
-                //   conn.createChannel(function(err, ch) {
-                //     var q = 'test';
-                //
-                //     ch.assertQueue(q, {durable: false});
-                //     console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q);
-                //     ch.consume(q, function(msg) {
-                //       console.log(" [x] Received %s", msg.content.toString());
-                //     }, {noAck: true});
-                //   });
-                // });
-
-
-
-
-
-            }
         </script>
     </head>
     <body>

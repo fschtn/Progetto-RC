@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Book time</title>
-        <meta charset="utf-8" />
+        <title>Book times</title>
+        <meta charset="utf-8" /><link rel="icon" href="/img/favicon.ico" />
         <link href="style.css" type="text/css" rel="stylesheet" />
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
@@ -14,7 +14,6 @@
         </style>
         <script>
             $(document).ready(function () {
-
                 // CARICAMENTO FACEBOOK
 
                 window.fbAsyncInit = function () {
@@ -27,7 +26,7 @@
                     });
                     FB.getLoginStatus(function(response) {
                         facebook_loaded = true;
-                        console.log("API Facebook caricata");
+                        // console.log("API Facebook caricata");
                     });
                 };
                 (function(d, s, id) {
@@ -44,7 +43,7 @@
                 setInterval(function() {
                     if(facebook_loaded) {
                         if(!page_loaded) {
-                            console.log("Carico la pagina");
+                            // console.log("Carico la pagina");
                             pageLoad();
                             page_loaded = true;
                         }
@@ -52,10 +51,6 @@
                         checkLogin();
                     }
                 }, 250);
-
-                if(getUrlParameter('access_token') != "") {
-                    localStorage.GoogleAccessToken = getUrlParameter('access_token');
-                }
 
             });
 
@@ -66,7 +61,7 @@
                 form.setAttribute('action', oauth2Endpoint);
                 var params = {
                     'client_id': '522551011728-ce79m2ejilk61ffeie38unbh7mdpo5cl.apps.googleusercontent.com',
-                    'redirect_uri': 'http://reti.francescoschettino.it',
+                    'redirect_uri': 'http://localhost/google_connect.html',
                     'response_type': 'token',
                     'scope': 'https://www.googleapis.com/auth/books',
                     'include_granted_scopes': 'true'
@@ -95,7 +90,7 @@
                 <span>
                     <img src="img/facebook.svg" /><br />
                     L'accesso con Facebook è necessario affinchè tu possa essere riconosciuto dal sistema, avere un'identità e cercare più facilmente i tuoi amici.<br />
-                    <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="true" scope="public_profile,email" onlogin="checkLogin()"></div>
+                    <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="true" scope="public_profile,email,user_friends" onlogin="checkLogin()"></div>
                 </span>
             </div>
             <div class="google">

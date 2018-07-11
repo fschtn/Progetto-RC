@@ -71,6 +71,26 @@ nav a:nth-child(n+2) {
     padding-bottom: 24px;
 }
 
+nav a:nth-child(5) {
+    font-size: 0;
+    padding: 6px 10px 10px;
+}
+
+nav a:nth-child(5)::before {
+    content: '';
+    background-color: #16a085;
+    -webkit-mask-image: url(/img/amici.svg);
+    mask-image: url(/img/amici.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 32px;
+    height: 32px;
+    fill: #888;
+    display: inline-block;
+    vertical-align: middle;
+}
+
 nav a img {
     position: relative;
     top: -2px;
@@ -184,7 +204,7 @@ nav a:last-child {
     z-index: 10000;
 }
 
-.libri, .book {
+.libri, .book, .amici {
     margin-top: 50px;
 }
 
@@ -207,6 +227,12 @@ nav a:last-child {
 .libri > h3 {
     text-align: center;
     font-size: 40px;
+    color: rgba(0,0,0,0.1);
+}
+
+#friends > h2 {
+    text-align: center;
+    font-size: 30px;
     color: rgba(0,0,0,0.1);
 }
 
@@ -234,7 +260,7 @@ nav a:last-child {
     background-size: cover;
     background-position: center center;
     overflow: hidden;
-    box-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
 }
 
 .cover:nth-of-type(4n) {
@@ -373,7 +399,7 @@ nav a:last-child {
     cursor: pointer;
 }
 
-.libro > .info input {
+.libro > .info input, .pages input {
     font-size: 16px;
     font-family: inherit;
     font-weight: 300;
@@ -384,14 +410,14 @@ nav a:last-child {
     border-radius: 5px;
 }
 
-.libro > .info input[disabled] {
+.libro > .info input[disabled], .pages input[disabled] {
     border: 0;
     background: none;
     color: #101010;
 }
 
 #add_to_library {
-    display: none;
+    opacity: 0;
 }
 
 .tasto-google {
@@ -408,6 +434,51 @@ nav a:last-child {
     background-size: auto 60%;
     background-repeat: no-repeat;
     background-position: 11px center;
+}
+
+#friends .aggiornamento {
+    width: 397px;
+    display: inline-block;
+    margin-bottom: 35px;
+    vertical-align: top;
+}
+
+#friends .aggiornamento .cover {
+    position: relative;
+    width: 100px;
+    height: 150px;
+    background: #101010;
+    vertical-align: top;
+    background-size: cover;
+    margin-top: 0;
+    overflow: visible;
+}
+
+#friends .aggiornamento .cover img {
+    position: absolute;
+    bottom: -7px;
+    right: -7px;
+    width: 45px;
+    height: 45px;
+    display: inline-block;
+    vertical-align: baseline;
+    border-radius: 2px;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+}
+
+#friends .aggiornamento .info {
+    width: 270px;
+    display: inline-block;
+}
+
+#friends .aggiornamento .info h1 {
+    font-size: 22px;
+    margin: 0 0 15px 0;
+}
+
+#friends .aggiornamento .info i {
+    font-style: normal;
+    font-weight: 600;
 }
 
 @media screen and (max-height: 815px) {

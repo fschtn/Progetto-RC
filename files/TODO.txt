@@ -1,0 +1,13 @@
+Sostituire tutti i location.reload() in modo che, invece di ricarica la pagina, la modifichino dinamicamente in modo da mostrare già i nuovi tasti
+
+All'interno di ogni funzione JS, aggiungere un console.log() in modo da vedere ogni quanto viene eseguita e limitare l'uso delle risorse
+
+Bloccare aggiornamento token continuo da parte di Facebook (aggiungere "console.log()" all'interno di "update_user_info" in "script.js" per vedere il "problema")
+
+————
+
+Avviare MAMP
+
+Avviare RabbitMQ da Console con:
+    cd /Users/francescoschettino/Applications/rabbitmq_server-3.7.6/sbin
+    ./rabbitmq-server

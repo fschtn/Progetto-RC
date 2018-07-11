@@ -2,13 +2,12 @@
 <html>
     <head>
         <title>Libri letti - Book time</title>
-        <meta charset="utf-8" />
+        <meta charset="utf-8" /><link rel="icon" href="/img/favicon.ico" />
         <link href="style.css" type="text/css" rel="stylesheet" />
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
         <script>
             $(document).ready(function () {
-
                 // CARICAMENTO FACEBOOK
 
                 window.fbAsyncInit = function () {
@@ -21,7 +20,7 @@
                     });
                     FB.getLoginStatus(function(response) {
                         facebook_loaded = true;
-                        console.log("API Facebook caricata");
+                        // console.log("API Facebook caricata");
                     });
                 };
                 (function(d, s, id) {
@@ -38,7 +37,7 @@
                 setInterval(function() {
                     if(facebook_loaded) {
                         if(!page_loaded) {
-                            console.log("Carico la pagina");
+                            // console.log("Carico la pagina");
                             pageLoad();
                             page_loaded = true;
                         }
@@ -50,7 +49,7 @@
                 // ————————————————————————————————————————————————————————————————————————————————————————————————————————
 
                 // Ottenere tutti i libri letti dall'utente e mostrarli all'interno della pagina —> getList("past", 100)
-                carica_libreria("Have read");
+                getList("past");
 
             });
         </script>
@@ -70,9 +69,10 @@
                 <a href="reading.html">In lettura</a>
                 <a href="to-read.html">Da leggere</a>
                 <a href="read.html" class="current">Letti</a>
+                <a href="friends.html">Amici</a>
                 <a href="logout.html">Logout</a>
             </nav>
-            <div class="libri"></div>
+            <div class="libri" id="past"></div>
         </div>
     </body>
 </html>

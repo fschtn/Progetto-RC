@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Libri in lettura - Book time</title>
-        <meta charset="utf-8" />
+        <meta charset="utf-8" /><link rel="icon" href="/img/favicon.ico" />
         <link href="style.css" type="text/css" rel="stylesheet" />
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
@@ -21,7 +21,7 @@
                     });
                     FB.getLoginStatus(function(response) {
                         facebook_loaded = true;
-                        console.log("API Facebook caricata");
+                        // console.log("API Facebook caricata");
                     });
                 };
                 (function(d, s, id) {
@@ -38,7 +38,7 @@
                 setInterval(function() {
                     if(facebook_loaded) {
                         if(!page_loaded) {
-                            console.log("Carico la pagina");
+                            // console.log("Carico la pagina");
                             pageLoad();
                             page_loaded = true;
                         }
@@ -47,27 +47,87 @@
                     }
                 }, 250);
 
-
                 // ————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+                $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves/?key="+google_api_key+"&access_token="+get_user_info("google_token"), function(res) {
+                    if(res.hasOwnProperty('items')) {
+                        if(res.items.length > 0) {
+                            res.items.forEach(function(item) {
+                                if(item.title == "Reading now") {
+                                    $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves/"+item.id+"/volumes?key="+google_api_key+"&access_token="+get_user_info("google_token"), function(res) {
+                                        if(res.hasOwnProperty('items')) {
+                                            if(res.items.length > 0) {
+                                                res.items.forEach(function(item) {
 
+                                                    // OTTENERE PAGINA MASSIMA E PAGINA ATTUALE
 
-
-
-                // Ottenere i libri che l'utente sta leggendo e mostrarli sulla pagina
-
-                // Per ciascun libro, ottnere le informazioni da mostrare di fianco alla copertina
-
-                // Per ciascun libro iniziato, ottenere anche la pagina attualmente registrata come "in lettura" e mostrarla nel form, in modo che l'utente possa modificarla
-
-                // Aggiungere funzione che, quando si modifica la pagina attualmente letta dall'utente, la aggiorna all'interno delle informazioni
-
-                // Fare in modo che, cliccando il tasto "Completato" o "Rimuovi dalla libreria" sotto il titolo del libro, esso venga segnalato come Completato o rimosso dalla libreria
-
-
-
-
-
+                                                    pagina_massima = item.volumeInfo.pageCount == undefined ? '425' : item.volumeInfo.pageCount;
+                                                    libro = $("<div></div>");
+                                                    cover = $("<div></div>");
+                                                    link = $("<a></a>");
+                                                    titolo = $("<h1></h1>");
+                                                    autore = $("<h2></h2>");
+                                                    info = $("<div></div>");
+                                                    pages = $("<span></span>");
+                                                    input = $("<input />");
+                                                    completato = $("<a></a>");
+                                                    rimuovi = $("<a></a>");
+                                                    titolo_text = item.volumeInfo.title.length > 30 ? item.volumeInfo.title.substr(0,27)+"..." : item.volumeInfo.title;
+                                                    titolo.append(titolo_text);
+                                                    if(item.volumeInfo.hasOwnProperty('authors'))
+                                                        autore.append(item.volumeInfo.authors[0]);
+                                                    link.append(titolo);
+                                                    link.append(autore);
+                                                    link.attr("href","book.html?id="+item.id);
+                                                    link.addClass("info");
+                                                    cover.append(link);
+                                                    cover.addClass("cover");
+                                                    cover.css("background-image", "url("+item.volumeInfo.imageLinks.thumbnail+")");
+                                                    info.append(titolo.clone());
+                                                    info.append(autore.clone());
+                                                    input.attr("type","number");
+                                                    input.attr("min","0");
+                                                    input.attr("max",pagina_massima);
+                                                    input.attr("onchange","page_update('"+item.id+"')");
+                                                    pages.append(input);
+                                                    pages.append("/ "+pagina_massima);
+                                                    info.append(pages);
+                                                    info.append("<br />");
+                                                    completato.attr("href","javascript:bookCompleted('"+item.id+"')");
+                                                    completato.addClass("green");
+                                                    completato.addClass("button");
+                                                    completato.append("Segna come completato");
+                                                    info.append(completato);
+                                                    info.append("<br />");
+                                                    rimuovi.attr("href","javascript:removeFromLibrary('"+item.id+"')");
+                                                    rimuovi.addClass("red");
+                                                    rimuovi.addClass("button");
+                                                    rimuovi.append("Rimuovi dalla libreria");
+                                                    info.append(rimuovi);
+                                                    info.addClass("info");
+                                                    libro.append(cover);
+                                                    libro.append(info);
+                                                    libro.addClass("libro");
+                                                    libro.attr("id",item.id);
+                                                    $('.libri').append(libro);
+                                                    get_current_page(get_user_info('facebook_id'),item.id);
+                                                });
+                                            }else{
+                                                $('#'+window.categoria_libro).append("<span>Nella libreria attuale non c'è ancora nessun libro</span>");
+                                            }
+                                        }else{
+                                            $('#'+window.categoria_libro).append("<span>Nella libreria attuale non c'è ancora nessun libro</span>");
+                                        }
+                                    });
+                                }
+                            });
+                        }else{
+                            $('#'+window.categoria_libro).append("<span>Impossibile ottenere la libreria attuale</span>");
+                        }
+                    }else{
+                        $('#'+window.categoria_libro).append("<span>L'utente attuale non ha nessuna libreria da mostrare</span>");
+                    }
+                });
             });
         </script>
     </head>
@@ -86,55 +146,10 @@
                 <a href="reading.html" class="current">In lettura</a>
                 <a href="to-read.html">Da leggere</a>
                 <a href="read.html">Letti</a>
+                <a href="friends.html">Amici</a>
                 <a href="logout.html">Logout</a>
             </nav>
-            <div class="libri">
-                <div class="libro">
-                    <div class="cover" style="background-image: url(img/libri/la-caduta-dei-giganti-ken-follett.jpg);">
-                        <a href="book.html?id=abc" class="info">
-                            <h1>La caduta dei giganti</h1>
-                            <h2>Ken Follett</h2>
-                        </a>
-                    </div>
-                    <div class="info">
-                        <h1>La caduta dei giganti</h1>
-                        <h2>Ken Follett</h2>
-                        <span class="pages"><input type="number" min="0" max="1058" value="189"/> / 1058</span><br />
-                        <a href="#" class="green button">Segna come completato</a><br />
-                        <a href="#" class="red button">Rimuovi dalla libreria</a>
-                    </div>
-                </div>
-                <div class="libro">
-                    <div class="cover" style="background-image: url(img/libri/four-veronica-roth.jpg);">
-                        <a href="book.html?id=abc" class="info">
-                            <h1>Four</h1>
-                            <h2>Veronica Roth</h2>
-                        </a>
-                    </div>
-                    <div class="info">
-                        <h1>Four</h1>
-                        <h2>Veronica Roth</h2>
-                        <span class="pages"><input type="number" min="0" max="276" value="232"/> / 276</span><br />
-                        <a href="#" class="green button">Segna come completato</a><br />
-                        <a href="#" class="red button">Rimuovi dalla libreria</a>
-                    </div>
-                </div>
-                <div class="libro">
-                    <div class="cover" style="background-image: url(img/libri/il-rumore-della-pioggia-gigi-paoli.jpg);">
-                        <a href="book.html?id=abc" class="info">
-                            <h1>Il rumore della pioggia</h1>
-                            <h2>Gigi Paoli</h2>
-                        </a>
-                    </div>
-                    <div class="info">
-                        <h1>Il rumore della pioggia</h1>
-                        <h2>Gigi Paoli</h2>
-                        <span class="pages"><input type="number" min="0" max="587" value="8"/> / 587</span><br />
-                        <a href="#" class="green button">Segna come completato</a><br />
-                        <a href="#" class="red button">Rimuovi dalla libreria</a>
-                    </div>
-                </div>
-            </div>
+            <div class="libri" id='present'></div>
         </div>
     </body>
 </html>

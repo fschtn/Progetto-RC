@@ -2,15 +2,13 @@
 <html>
     <head>
         <title>Profilo - Book time</title>
-        <meta charset="utf-8" />
+        <meta charset="utf-8" /><link rel="icon" href="/img/favicon.ico" />
         <link href="style.css" type="text/css" rel="stylesheet" />
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
         <script>
             $(document).ready(function () {
-
                 // CARICAMENTO FACEBOOK
-
                 window.fbAsyncInit = function () {
                     FB.init({
                         appId: '194992524408368',
@@ -21,7 +19,7 @@
                     });
                     FB.getLoginStatus(function(response) {
                         facebook_loaded = true;
-                        console.log("API Facebook caricata");
+                        // console.log("API Facebook caricata");
                     });
                 };
                 (function(d, s, id) {
@@ -38,7 +36,7 @@
                 setInterval(function() {
                     if(facebook_loaded) {
                         if(!page_loaded) {
-                            console.log("Carico la pagina");
+                            // console.log("Carico la pagina");
                             pageLoad();
                             page_loaded = true;
                         }
@@ -48,23 +46,10 @@
                 }, 250);
 
 
-                // ————————————————————————————————————————————————————————————————————————————————————————————————————————
-
-
-
-
-
-
-                // Caricare gli ultimi 6 libri appartenenti a ciascuna libreria e mostrarli nelle <div> corrispondenti -> getList("XX", 6)
-
-
-
-
-
-
-
-
-
+                // Caricare gli ultimi 4 libri appartenenti a ciascuna libreria e mostrarli nelle <div> corrispondenti -> getList("XX", 4)
+                getList("past", 4);
+                getList("present", 4);
+                getList("future", 4);
 
             });
         </script>
@@ -84,82 +69,20 @@
                 <a href="reading.html">In lettura</a>
                 <a href="to-read.html">Da leggere</a>
                 <a href="read.html">Letti</a>
+                <a href="friends.html">Amici</a>
                 <a href="logout.html">Logout</a>
             </nav>
-            <div class="libri">
+            <div class="libri" id="present">
                 <h2>In lettura</h2>
-                <div class="cover" style="background-image: url(img/libri/la-caduta-dei-giganti-ken-follett.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>La caduta dei giganti</h1>
-                        <h2>Ken Follett</h2>
-                    </a>
-                </div>
+
             </div>
-            <div class="libri">
+            <div class="libri" id="future">
                 <h2>Da leggere</h2>
-                <div class="cover" style="background-image: url(img/libri/le-sfide-di-apollo-rick-riordan.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>Le sfide di Apollo</h1>
-                        <h2>Rick Riordan</h2>
-                    </a>
-                </div>
-                <div class="cover" style="background-image: url(img/libri/macerie-prime-zerocalcare.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>Macerie prime</h1>
-                        <h2>Zerocalcare</h2>
-                    </a>
-                </div>
-                <div class="cover" style="background-image: url(img/libri/non-ho-paura-del-buio-robert-dugoni.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>Non ho paura del buio</h1>
-                        <h2>Roberto Dugoni</h2>
-                    </a>
-                </div>
-                <div class="cover" style="background-image: url(img/libri/the-store-james-patterson.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>The store</h1>
-                        <h2>James Patterson</h2>
-                    </a>
-                </div>
+
             </div>
-            <div class="libri">
+            <div class="libri" id="past">
                 <h2>Letti</h2>
-                <div class="cover" style="background-image: url(img/libri/e-buonanotte-daniele-doesn-t-matter.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>E buonanotte</h1>
-                        <h2>Daniele doesn't matter</h2>
-                    </a>
-                </div>
-                <div class="cover" style="background-image: url(img/libri/four-veronica-roth.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>Four</h1>
-                        <h2>Veronica Roth</h2>
-                    </a>
-                </div>
-                <div class="cover" style="background-image: url(img/libri/il-rumore-della-pioggia-gigi-paoli.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>Il rumore della pioggia</h1>
-                        <h2>Gigi Paoli</h2>
-                    </a>
-                </div>
-                <div class="cover" style="background-image: url(img/libri/in-mare-aperto-clive-cussler.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>In mare aperto</h1>
-                        <h2>Clive Cussler</h2>
-                    </a>
-                </div>
-                <div class="cover" style="background-image: url(img/libri/it-stephen-king.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>IT</h1>
-                        <h2>Stephen King</h2>
-                    </a>
-                </div>
-                <div class="cover" style="background-image: url(img/libri/la-caduta-dei-giganti-ken-follett.jpg);">
-                    <a href="book.html?id=abc" class="info">
-                        <h1>La caduta dei giganti</h1>
-                        <h2>Ken Follett</h2>
-                    </a>
-                </div>
+
             </div>
         </div>
     </body>

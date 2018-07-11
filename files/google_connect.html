@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script>
+        var localStorage;
+        $(document).ready(function () {
+            var param = ottieni_parametri_url(window.location.href);
+            timestamp = Math.floor(Date.now()/1000);
+            durata_token_google = param['expires_in'][0];
+            access_token_google = param['access_token'][0];
+            scadenza_token_google = timestamp+parseInt(durata_token_google);
+            update_user_info("google_scadenza", scadenza_token_google);
+            update_user_info("google_token", access_token_google);
+            window.location.href = 'http://localhost/';
+        });
+  </script>
+</head>
+<body>
+</body>
+</html>

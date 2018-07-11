@@ -2,8 +2,28 @@ var accesso_facebook;
 var facebook_access_token;
 var facebook_loaded;
 var google_api_key = "AIzaSyBFzl0QHgg6tPybSNW0DMxAQF40oQFFKqA";
-var google_access_token = localStorage.GoogleAccessToken;
 var id_libreria;
+var limite;
+
+function ottieni_parametri_url(url) {
+    var queryStart = url.indexOf("#") + 1,
+        queryEnd   = url.indexOf("?") + 1 || url.length + 1,
+        query = url.slice(queryStart, queryEnd - 1),
+        pairs = query.replace(/\+/g, " ").split("&"),
+        parms = {}, i, n, v, nv;
+
+    if (query === url || query === "") return;
+
+    for (i = 0; i < pairs.length; i++) {
+        nv = pairs[i].split("=", 2);
+        n = decodeURIComponent(nv[0]);
+        v = decodeURIComponent(nv[1]);
+
+        if (!parms.hasOwnProperty(n)) parms[n] = [];
+        parms[n].push(nv.length === 2 ? v : null);
+    }
+    return parms;
+}
 
 function pageLoad() {
     checkLogin();
@@ -33,7 +53,8 @@ function controllaAccessoFacebook() {
     FB.getLoginStatus(function(response) {
         if(response.status == 'connected') {
             accesso_facebook = true;
-            facebook_access_token = response.authResponse.accessToken;
+            update_user_info("facebook_token", response.authResponse.accessToken);
+            update_user_info("facebook_id", response.authResponse.userID);
         }else{
             accesso_facebook = false;
         }
@@ -42,118 +63,171 @@ function controllaAccessoFacebook() {
 }
 
 function controllaAccessoGoogle() {
-    if(localStorage.GoogleAccessToken != "undefined" && localStorage.GoogleAccessToken.length > 0)
-        return true;
+    if(get_user_info("google_token") != undefined)
+        if(get_user_info("google_token").length > 0) {
+            timestamp = Math.floor(Date.now()/1000);
+            if (timestamp < get_user_info('google_scadenza'))
+                return true;
+            else
+                return false;
+        }else
+            return false;
     else
         return false;
 }
 
 function ottieniInfoUtente() {
-    $.get("https://graph.facebook.com/me?fields=first_name,picture&access_token="+facebook_access_token, function(response) {
-        if(document.location.pathname == "/profile.html")
-            document.title = response.first_name+" - Book time";
-        if(document.location.pathname != "/") {
-            $('nav a span').text(response.first_name);
-            $('nav a img').attr("src", response.picture.data.url);
-        }
-    });
+    if(get_user_info("nome_utente") == "" || get_user_info("immagine_utente") == "") {
+        $.get("https://graph.facebook.com/me?fields=first_name,picture&access_token="+get_user_info("facebook_token"), function(response) {
+            update_user_info("nome_utente", response.first_name);
+            update_user_info("immagine_utente", response.picture.data.url);
+        }).then(function() {
+            $('nav a span').text(get_user_info("nome_utente"));
+            $('nav a img').attr("src", get_user_info("immagine_utente"));
+        });
+    }else{
+        $('nav a span').text(get_user_info("nome_utente"));
+        $('nav a img').attr("src", get_user_info("immagine_utente"));
+    }
 }
 
-var getUrlParameter = function getUrlParameter(sParam) {
-    var sPageURL = decodeURIComponent(window.location.hash.substr(1)),
-        sURLVariables = sPageURL.split('&'),
-        sParameterName,
-        i;
-
-    for (i = 0; i < sURLVariables.length; i++) {
-        sParameterName = sURLVariables[i].split('=');
-
-        if (sParameterName[0] === sParam) {
-            return sParameterName[1] === undefined ? true : sParameterName[1];
-        }
+function update_user_info(chiave, valore) {
+    if(localStorage.UserInfo == 'undefined' || localStorage.UserInfo == undefined || localStorage.UserInfo == "undefined") {
+        user_info = {};
+        localStorage.UserInfo = JSON.stringify(user_info);
+    }else{
+        user_info = JSON.parse(localStorage.UserInfo);
+        user_info[chiave] = valore;
+        localStorage.UserInfo = JSON.stringify(user_info);
     }
-};
+}
 
-// Definisco la funzione di creazione di un nuovo libro
-// che verrà richiamata per ciascun risultato trovato dalla ricerca
-function crea_libro(item) {
-    libro = $("<div></div>");
-    link = $("<a></a>");
-    titolo = $("<h1></h1>");
-    autore = $("<h2></h2>");
-    titolo_text = item.volumeInfo.title.length > 30 ? item.volumeInfo.title.substr(0,27)+"..." : item.volumeInfo.title;
-    titolo.append(titolo_text);
-    if(item.volumeInfo.hasOwnProperty('authors'))
-        autore.append(item.volumeInfo.authors[0]);
-    link.append(titolo);
-    link.append(autore);
-    link.addClass("info");
-    link.attr("href","book.html?id="+item.id);
-    libro.append(link);
-    libro.addClass("cover");
-    libro.css("background-image", "url("+item.volumeInfo.imageLinks.thumbnail+")");
-    $('.libri').append(libro);
+function get_user_info(chiave) {
+    if(localStorage.UserInfo != 'undefined' && localStorage.UserInfo != undefined && localStorage.UserInfo != "undefined") {
+        user_info = JSON.parse(localStorage.UserInfo);
+        if(chiave in user_info)
+            return user_info[chiave];
+        else
+            return false;
+    }
+}
+
+function getList(type, limit=999999999) {
+    window.limite = limit;
+    nomi = {"past":"Have read", "present": "Reading now", "future":"To read"};
+    carica_libreria(nomi[type]);
 }
 
 function carica_libreria(nome) {
-    $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves?key="+google_api_key+"&access_token="+google_access_token, function(res) {
+    $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves/?key="+google_api_key+"&access_token="+get_user_info("google_token"), function(res) {
         if(res.hasOwnProperty('items')) {
             if(res.items.length > 0) {
                 res.items.forEach(function(item) {
-                    // console.log(item);
                     if(item.title == nome) {
-                        $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves/"+item.id+"/volumes?key="+google_api_key+"&access_token="+google_access_token, function(res) {
+                        $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves/"+item.id+"/volumes?key="+google_api_key+"&access_token="+get_user_info("google_token"), function(res) {
                             if(res.hasOwnProperty('items')) {
                                 if(res.items.length > 0) {
-                                    res.items.forEach(crea_libro);
+                                    categoria_libro = nome;
+                                    res.items.forEach(function(item) {
+                                        conversione_id = {"Have read":"past", "Reading now":"present", "To read":"future"};
+                                        id = conversione_id[categoria_libro];
+                                        if($('#'+id+' .cover').length < window.limite) {
+                                            libro = $("<div></div>");
+                                            link = $("<a></a>");
+                                            titolo = $("<h1></h1>");
+                                            autore = $("<h2></h2>");
+                                            titolo_text = item.volumeInfo.title.length > 30 ? item.volumeInfo.title.substr(0,27)+"..." : item.volumeInfo.title;
+                                            titolo.append(titolo_text);
+                                            if(item.volumeInfo.hasOwnProperty('authors'))
+                                                autore.append(item.volumeInfo.authors[0]);
+                                            link.append(titolo);
+                                            link.append(autore);
+                                            link.addClass("info");
+                                            link.attr("href","book.html?id="+item.id);
+                                            libro.append(link);
+                                            libro.addClass("cover");
+                                            libro.css("background-image", "url("+item.volumeInfo.imageLinks.thumbnail+")");
+                                            console.log("proviamo i libri");
+                                            $('#'+id).append(libro);
+                                        }
+                                    });
                                 }else{
-                                    $('.libri').append("<span>Nella libreria attuale non c'è ancora nessun libro</span>");
+                                    $('#'+window.categoria_libro).append("<span>Nella libreria attuale non c'è ancora nessun libro</span>");
                                 }
                             }else{
-                                $('.libri').append("<span>Nella libreria attuale non c'è ancora nessun libro</span>");
+                                $('#'+window.categoria_libro).append("<span>Nella libreria attuale non c'è ancora nessun libro</span>");
                             }
                         });
                     }
                 });
             }else{
-                $('.libri').append("<span>Impossibile ottenere la libreria attuale</span>");
+                $('#'+window.categoria_libro).append("<span>Impossibile ottenere la libreria attuale</span>");
             }
         }else{
-            $('.libri').append("<span>L'utente attuale non ha nessuna libreria da mostrare</span>");
+            $('#'+window.categoria_libro).append("<span>L'utente attuale non ha nessuna libreria da mostrare</span>");
         }
     });
 }
 
+function get_queue() {
+    $.get("/queue/get_queue.php", function(res) {
+        localStorage.setItem('coda_libri', res);
+        return localStorage.getItem('coda_libri');
+    });
+}
+
+function get_current_page(id_facebook, id_libro){
+    current_page = 0;
+    JSON.parse(localStorage.getItem('coda_libri')).forEach(function(aggiornamento) {
+        aggiornamento = JSON.parse(aggiornamento);
+        if(aggiornamento.id_facebook == id_facebook && aggiornamento.id_libro == id_libro) {
+            if(document.location.pathname == "/reading.html" || document.location.pathname == '/book.html') {
+                $("#"+id_libro+" span input").val(aggiornamento.pagina_nuova);
+            }else{
+                $('#'+id_facebook+' #'+id_libro+' span input').val(aggiornamento.pagina_nuova);
+            }
+            current_page = aggiornamento.pagina_nuova;
+        }
+    });
+    return current_page;
+}
+
+function page_update(id_libro) {
+    maxpage = $("#"+id_libro+" span input").attr("max");
+    pagina_attuale = $("#"+id_libro+" span input").val();
+    if(parseInt(pagina_attuale) >= parseInt(maxpage)) {
+        $("#"+id_libro+" span input").val(maxpage);
+        pagina_attuale = maxpage;
+    }
+    aggiornaPagina(pagina_attuale,id_libro);
+}
+
+function aggiornaPagina(pagina_nuova, id_libro){
+    id_facebook = get_user_info("facebook_id");
+    $.post("/queue/update_books.php",
+        {
+            "pagina_nuova": pagina_nuova,
+            "id_facebook": id_facebook,
+            "id_libro": id_libro
+        }
+    ).done(function() {
+        get_queue();
+    });
+}
+
 function addToLibrary(id) {
-    $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves?key="+google_api_key+"&access_token="+google_access_token, function(res) {
+    $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves?key="+google_api_key+"&access_token="+get_user_info('google_token'), function(res) {
         if(res.hasOwnProperty('items')) {
             if(res.items.length > 0) {
                 res.items.forEach(function(item) {
                     if(item.title == "To read") {
                         $.ajax({
-                            url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/'+item.id+'/addVolume?volumeId='+id+'&key='+google_api_key+'&access_token='+google_access_token,
+                            url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/'+item.id+'/addVolume?volumeId='+id+'&key='+google_api_key+'&access_token='+get_user_info("google_token"),
                             type:"POST",
                             contentType:"application/json",
                             success: function(res){
                                 if(res == undefined) {
-                                    $('#add_to_library').addClass("disabled");
-                                    $('#add_to_library').removeAttr("onclick");
-                                    $('#add_to_library').text("✔ Aggiunto");
-                                    setTimeout(function() {
-                                        iniziato = $("<span></span>");
-                                        rimuovi = $("<span></span>");
-                                        iniziato.addClass("button");
-                                        iniziato.addClass("green");
-                                        iniziato.text('Segna come iniziato');
-                                        iniziato.attr("onclick","bookCompleted('"+id+"')");
-                                        rimuovi.addClass("button");
-                                        rimuovi.addClass("red");
-                                        rimuovi.attr("onclick", "removeFromLibrary('"+id+"')");
-                                        rimuovi.text("Rimuovi dalla libreria");
-                                        $('.pages').append(iniziato);
-                                        $('.pages').append(rimuovi);
-                                        $('.pages #add_to_library').remove();
-                                    }, 2000);
+                                    location.reload();
                                 }
                             }
                         });
@@ -169,27 +243,31 @@ function addToLibrary(id) {
 }
 
 function removeFromLibrary(id) {
-    $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves?key="+google_api_key+"&access_token="+google_access_token, function(res) {
+    $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves?key="+google_api_key+"&access_token="+get_user_info("google_token"), function(res) {
         if(res.hasOwnProperty('items')) {
             if(res.items.length > 0) {
-                res.items.forEach(function(item) {
-                    if(item.title == "To read" || item.title == "Reading now") {
-                        $.ajax({
-                            url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/'+item.id+'/removeVolume?volumeId='+id+'&key='+google_api_key+'&access_token='+google_access_token,
-                            type:"POST",
-                            contentType:"application/json",
-                            success: function(res){
-                                $('.pages > span').remove();
-                                aggiungi = $("<span></span>");
-                                aggiungi.addClass("button");
-                                aggiungi.addClass("green");
-                                aggiungi.attr("id","add_to_library");
-                                aggiungi.attr("onclick", "addToLibrary('"+id+"')");
-                                aggiungi.text('Segna come "Da leggere"');
-                                $('.pages').append(aggiungi);
-                                $('#add_to_library').css("display","inline-block");
-                            }
-                        });
+                $.ajax({
+                    url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/2/removeVolume?volumeId='+id+'&key='+google_api_key+'&access_token='+get_user_info("google_token"),
+                    type:"POST",
+                    contentType:"application/json",
+                    success: function(res){
+                        location.reload();
+                    }
+                });
+                $.ajax({
+                    url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/3/removeVolume?volumeId='+id+'&key='+google_api_key+'&access_token='+get_user_info("google_token"),
+                    type:"POST",
+                    contentType:"application/json",
+                    success: function(res){
+                        location.reload();
+                    }
+                });
+                $.ajax({
+                    url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/4/removeVolume?volumeId='+id+'&key='+google_api_key+'&access_token='+get_user_info("google_token"),
+                    type:"POST",
+                    contentType:"application/json",
+                    success: function(res){
+                        location.reload();
                     }
                 });
             }else{
@@ -197,34 +275,47 @@ function removeFromLibrary(id) {
             }
         }else{
             console.error("Impossibile ottenere la libreria attuale");
+        }
+    });
+}
+
+function bookStarted(id) {
+    aggiornaPagina('1',id);
+    $.ajax({
+        url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/2/removeVolume?volumeId='+id+'&key='+google_api_key+'&access_token='+get_user_info("google_token"),
+        type:"POST",
+        contentType:"application/json"
+    });
+    $.ajax({
+        url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/3/addVolume?volumeId='+id+'&key='+google_api_key+'&access_token='+get_user_info("google_token"),
+        type:"POST",
+        contentType:"application/json",
+        success: function(res){
+            if(res == undefined) {
+                location.reload();
+            }else{
+                alert("Errore durante l'aggiunta del libro");
+            }
         }
     });
 }
 
 function bookCompleted(id) {
-    $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves?key="+google_api_key+"&access_token="+google_access_token, function(librerie) {
+    $.get("https://www.googleapis.com/books/v1/mylibrary/bookshelves?key="+google_api_key+"&access_token="+get_user_info("google_token"), function(librerie) {
         if(librerie.hasOwnProperty('items')) {
             if(librerie.items.length > 0) {
-                librerie.items.forEach(function(libreria) {
-                    if(libreria.title == "To read") {
-                        $.ajax({
-                            url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/'+libreria.id+'/removeVolume?volumeId='+id+'&key='+google_api_key+'&access_token='+google_access_token,
-                            type:"POST",
-                            contentType:"application/json",
-                            success: function(res){
-                                $('.pages > span').remove();
-                            }
-                        });
+                $.post({
+                    url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/3/removeVolume?volumeId='+id+'&key='+google_api_key+'&access_token='+get_user_info("google_token"),
+                    contentType:"application/json",
+                    success: function(res){
+                        location.reload();
                     }
-                    if(libreria.title == "Reading now") {
-                        $.ajax({
-                            url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/'+libreria.id+'/addVolume?volumeId='+id+'&key='+google_api_key+'&access_token='+google_access_token,
-                            type:"POST",
-                            contentType:"application/json",
-                            success: function(res){
-                                $('.pages > span').remove();
-                            }
-                        });
+                });
+                $.post({
+                    url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/4/addVolume?volumeId='+id+'&key='+google_api_key+'&access_token='+get_user_info("google_token"),
+                    contentType:"application/json",
+                    success: function(res){
+                        location.reload();
                     }
                 });
             }else{
@@ -236,8 +327,6 @@ function bookCompleted(id) {
     });
 }
 
-function getList(type, limit) {
-//         type = [past,present,future]
-//         limit = (1,100)
-//     Ottiene i primi <limit> libri della lista <type>
-}
+$( document ).ready(function() {
+    get_queue();
+});
