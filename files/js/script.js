@@ -203,16 +203,46 @@ function page_update(id_libro) {
 }
 
 function aggiornaPagina(pagina_nuova, id_libro){
-    id_facebook = get_user_info("facebook_id");
-    $.post("/queue/update_books.php",
-        {
-            "pagina_nuova": pagina_nuova,
-            "id_facebook": id_facebook,
-            "id_libro": id_libro
-        }
-    ).done(function() {
-        get_queue();
-    });
+    // if ("WebSocket" in window) {
+    //     // console.log("Il browser supporta le websocket");
+    //
+    //     // Creo una connessione con il server delle socket e richiamo lo script "aggiorna_pagina"
+    //
+    //     var ws = new WebSocket("ws://localhost:9998/aggiorna_pagina");
+    //
+    //     // Specifico le azioni da eseguire quando la connessione viene aperta
+    //
+    //     ws.onopen = function() {
+    //        ws.send("Invio questo messaggio");
+    //        // console.log("Ho inviato il messaggio");
+    //     };
+    //
+    //     // Specifico le azioni da eseguire quando viene ricevuto un messaggio
+    //
+    //     ws.onmessage = function (evt) {
+    //        var msg_received = evt.data;
+    //        // alert(msg_received);
+    //        // console.log("Ho ricevuto il messaggio: "+msg_received);
+    //     };
+    //
+    //     // Specifico le azioni da eseguire quando la connessione viene chiusa
+    //
+    //     ws.onclose = function() {
+    //         // console.log("La connessione con la websocket è stata chiusa");
+    //     };
+    // }else{
+        // console.log("Il browser non supporta le websocket, invio una POST con AJAX");
+        id_facebook = get_user_info("facebook_id");
+        $.post("/queue/update_books.php",
+            {
+                "pagina_nuova": pagina_nuova,
+                "id_facebook": id_facebook,
+                "id_libro": id_libro
+            }
+        ).done(function() {
+            get_queue();
+        });
+    // }
 }
 
 function addToLibrary(id) {
