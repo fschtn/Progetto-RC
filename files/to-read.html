@@ -9,7 +9,7 @@
         <script>
             $(document).ready(function () {
 
-                // CARICAMENTO FACEBOOK
+                // Caricamento API Facebook
 
                 window.fbAsyncInit = function () {
                     FB.init({
@@ -32,7 +32,7 @@
                     fjs.parentNode.insertBefore(js, fjs);
                 }(document, 'script', 'facebook-jssdk'));
 
-                // INTERVALLO CHE CARICA LA PAGINA SOLO QUANDO SONO STATI CARICATI SIA GOOGLE CHE FACEBOOK
+                // Intervallo che carica la pagina solo quando sono stati carica sia Google che Facebook
 
                 var page_loaded = false;
                 setInterval(function() {
