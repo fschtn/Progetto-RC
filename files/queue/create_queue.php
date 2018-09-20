@@ -1,6 +1,6 @@
 <?php
 
-$messaggio = $_POST['messaggio'];
+// Se esiste, e se riesco ad aprire il file con l'elenco dei libri in lettura, li inserisco tutti quanti all'interno della coda di RabbitMQ
 
 if ($file = fopen("../info_utenti/libri_in_lettura.csv", "r")) {
     while(!feof($file)) {

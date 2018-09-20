@@ -1,5 +1,7 @@
 <?php
 
+// Avvio il server di RabbitMQ e mi ci connetto
+
 require_once('./vendor/autoload.php');
 
 use \PhpAmqpLib\Connection\AMQPStreamConnection;
@@ -33,7 +35,7 @@ $channel->queue_declare(
     $ticket = null
 );
 
-// Ottengo i dati tramite la post
+// Ottengo i dati da inserire in coda
 
 $messaggio = $_POST['messaggio'];
 

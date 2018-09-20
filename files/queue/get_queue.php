@@ -1,5 +1,7 @@
 <?php
 
+    // Avvio il server di RabbitMQ
+
     require_once('./vendor/autoload.php');
     use \PhpAmqpLib\Connection\AMQPStreamConnection;
     define("RABBITMQ_HOST", "localhost");
@@ -13,6 +15,9 @@
         RABBITMQ_USERNAME,
         RABBITMQ_PASSWORD
     );
+
+    // Mi connetto al server su un determinato "canale"
+
     $channel = $connection->channel();
     $channel->queue_declare(
         $queue = RABBITMQ_QUEUE_NAME,
