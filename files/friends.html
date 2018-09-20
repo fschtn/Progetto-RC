@@ -48,7 +48,7 @@
                             pageLoad();
                             page_loaded = true;
                         }
-                        console.log("Controllo gli accessi");
+                        // console.log("Controllo gli accessi");
                         checkLogin();
                     }
                 }, 250);
@@ -122,7 +122,7 @@
                     titolo_libro = res.volumeInfo.title.length > 22 ? res.volumeInfo.title.substr(0,19)+"..." : res.volumeInfo.title;
                     $('#'+id_facebook+" .info h1").html(titolo_libro);
                     $('#'+id_facebook+" .cover").css("background-image", "url("+res.volumeInfo.imageLinks.thumbnail+")");
-                    console.log(res.volumeInfo);
+                    // console.log(res.volumeInfo);
                 });
             }
         </script>

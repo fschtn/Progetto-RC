@@ -147,7 +147,7 @@ function carica_libreria(nome) {
                                             libro.append(link);
                                             libro.addClass("cover");
                                             libro.css("background-image", "url("+item.volumeInfo.imageLinks.thumbnail+")");
-                                            console.log("proviamo i libri");
+                                            // console.log("proviamo i libri");
                                             $('#'+id).append(libro);
                                         }
                                     });

@@ -6,8 +6,12 @@ Bloccare aggiornamento token continuo da parte di Facebook (aggiungere "console.
 
 ————
 
-Avviare MAMP
+1) Avviare MAMP
 
-Avviare RabbitMQ da Console con:
+2) Avviare RabbitMQ da Console con:
     cd /Users/francescoschettino/Applications/rabbitmq_server-3.7.6/sbin
     ./rabbitmq-server
+
+3) Avviare il server per le webSocket:
+    cd /Users/francescoschettino/Google Drive/Universita/Reti di calcolatori/Progetto-RC/files/websocket-server/mod_pywebsocket
+    sudo python standalone.py -p 9998 -w ../example/
